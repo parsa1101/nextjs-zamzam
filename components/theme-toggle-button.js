@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion'
+// import { AnimatePresence, motion } from 'framer-motion'
+const { AnimatePresence, motion } = require('framer-motion')
 import { IconButton, useColorMode, useColorModeValue } from '@chakra-ui/react'
 import { SunIcon, MoonIcon } from '@chakra-ui/icons'
 
