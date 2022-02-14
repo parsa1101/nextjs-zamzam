@@ -14,11 +14,18 @@
     "@chakra-ui/react": "^1.8.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "axios": "^0.26.0",
+    "axios-jsonp": "^1.0.4",
     "framer-motion": "^6.2.6",
+    "js-cookie": "^3.0.1",
+    "mongoose": "^6.2.1",
     "next": "12.0.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
+    "react-swipeable": "^6.2.0",
+    "stylis": "^4.0.13",
+    "stylis-plugin-rtl": "^2.1.1",
     "three": "^0.137.5"
   },
   "devDependencies": {
