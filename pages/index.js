@@ -24,9 +24,7 @@ import {
   Item
 } from '../components/carousel/components'
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
-// import Carousel from '../components/carousel/Carousel'
 const Paragraph = dynamic(() => import('../components/paragraph'))
-// import Paragraph from '../components/paragraph'
 const Home = ({ questions }) => {
   return (
     <Layout>
