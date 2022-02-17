@@ -28,7 +28,8 @@ import Cookies from 'js-cookie'
 
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
 const Paragraph = dynamic(() => import('../components/paragraph'))
-const Home = ({ questions }) => {
+const Home = ({ questions, categories }) => {
+  Cookies.set('menuItems', JSON.stringify(categories))
   return (
     <Layout>
       <Container>
@@ -130,12 +131,12 @@ export async function getStaticProps() {
   const categories = await Category.find({ parrent_id: null })
     .sort({ createdAt: -1 })
     .lean()
-  Cookies.set('menuItems', JSON.stringify(categories))
 
   await db.disconnect()
   return {
     props: {
-      questions: questions.map(db.convertDocToObj)
+      questions: questions.map(db.convertDocToObj),
+      categories: categories.map(db.convertCategoryToObj)
     }
   }
 }
