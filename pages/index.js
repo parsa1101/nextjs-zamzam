@@ -23,6 +23,7 @@ import {
   ExtraInfo,
   Item
 } from '../components/carousel/components'
+
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
 const Paragraph = dynamic(() => import('../components/paragraph'))
 const Home = ({ questions }) => {
@@ -123,7 +124,6 @@ export async function getStaticProps() {
   await db.connect()
   const questions = await Question.find({ status: true })
     .sort({ createdAt: -1 })
-
     .lean()
 
   await db.disconnect()

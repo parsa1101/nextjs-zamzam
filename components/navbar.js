@@ -12,15 +12,53 @@ import {
   MenuList,
   MenuButton,
   IconButton,
-  useColorModeValue
+  useColorModeValue,
+  Button,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  List,
+  ListItem,
+  ListIcon
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
 import { IoLogoGithub } from 'react-icons/io5'
+import Cookies from 'js-cookie'
+import { useState } from 'react'
+import { FaLayerGroup } from 'react-icons/fa'
 
+const GroupDrawer = ({ toggle, isOpen }) => {
+  const menuItems = JSON.parse(Cookies.get('menuItems'))
+  return (
+    <Drawer placement="right" onClose={toggle} isOpen={isOpen}>
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerHeader borderBottomWidth="1px">گروهبندی احکام:</DrawerHeader>
+        <DrawerBody>
+          {menuItems.map(item => (
+            <List spacing={3} key={item._id}>
+              <ListItem m={5}>
+                <ListIcon color="blue.500">
+                  <FaLayerGroup size="md" />
+                </ListIcon>
+                <NextLink href={`/question/category/${item._id}`} passHref>
+                  <Link onClick={toggle}>{item.name}</Link>
+                </NextLink>
+              </ListItem>
+            </List>
+          ))}
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
+  )
+}
 const LinkItem = ({ href, path, _target, children, ...props }) => {
   const active = path === href
   const inactiveColor = useColorModeValue('gray200', 'whiteAlpha.900')
+
   return (
     <NextLink href={href} passHref>
       <Link
@@ -38,6 +76,39 @@ const LinkItem = ({ href, path, _target, children, ...props }) => {
 
 const Navbar = props => {
   const { path } = props
+
+  const userId = Cookies.get('userId')
+  const token = Cookies.get('userToken')
+
+  const [showDrawer1, setShowDrawer1] = useState(false)
+  const [showDrawer2, setShowDrawer2] = useState(false)
+
+  function toggleDrawer1() {
+    setShowDrawer1(!showDrawer1)
+  }
+
+  function toggleDrawer2() {
+    setShowDrawer2(!showDrawer2)
+  }
+
+  const logoutHandler = async () => {
+    if (userId) {
+      await axios.post(
+        `/api/auth/${userId}`,
+        {
+          token: '0'
+        },
+        {
+          headers: { authorization: `Bearer ${token}` }
+        }
+      )
+    }
+
+    ctx.logout()
+    Cookies.remove('userId')
+    Cookies.remove('userToken')
+    router.push('/')
+  }
 
   return (
     <Box
@@ -71,12 +142,22 @@ const Navbar = props => {
           flexGrow={1}
           mt={{ base: 4, md: 0 }}
         >
-          <LinkItem href="/works" path={path}>
-            Works
-          </LinkItem>
-          <LinkItem href="/posts" path={path}>
-            Posts
-          </LinkItem>
+          {!userId && (
+            <LinkItem href="/login" path={path}>
+              عضویت/ورود
+            </LinkItem>
+          )}
+          {userId && (
+            <Button variant="ghost" onClick={logoutHandler}>
+              خروج
+            </Button>
+          )}
+          <Button variant="ghost" onClick={toggleDrawer1}>
+            گروهبندی احکام
+          </Button>
+          {showDrawer1 && (
+            <GroupDrawer toggle={toggleDrawer1} isOpen={showDrawer1} />
+          )}
           <LinkItem
             _target="_blank"
             href="https://github.com/craftzdog/craftzdog-homepage"
@@ -87,7 +168,7 @@ const Navbar = props => {
             pl={2}
           >
             <IoLogoGithub />
-            Source
+            اطلاعات کاربری
           </LinkItem>
         </Stack>
 
@@ -103,15 +184,22 @@ const Navbar = props => {
                 aria-label="Options"
               />
               <MenuList>
-                <NextLink href="/" passHref>
-                  <MenuItem as={Link}>About</MenuItem>
-                </NextLink>
-                <NextLink href="/works" passHref>
-                  <MenuItem as={Link}>Works</MenuItem>
-                </NextLink>
-                <NextLink href="/posts" passHref>
-                  <MenuItem as={Link}>Posts</MenuItem>
-                </NextLink>
+                {!userId && (
+                  <NextLink href="/login" passHref>
+                    <MenuItem as={Link}> عضویت/ورود</MenuItem>
+                  </NextLink>
+                )}
+                {userId && (
+                  <Button variant="ghost" onClick={logoutHandler}>
+                    خروج
+                  </Button>
+                )}
+                <Button variant="ghost" onClick={toggleDrawer2}>
+                  گروهبندی احکام
+                </Button>
+                {showDrawer2 && (
+                  <GroupDrawer toggle={toggleDrawer2} isOpen={showDrawer2} />
+                )}
                 <MenuItem
                   as={Link}
                   href="https://github.com/craftzdog/craftzdog-homepage"
