@@ -12,27 +12,27 @@ import Category from '../../../models/category'
 // const TreeCatSelect = dynamic(() =>
 //   import('../../../components/treeCatSelect/TreeSelect')
 // )
-import { useEffect } from 'react'
-import axios from 'axios'
-import { getError } from '../../../utils/error'
+// import { useEffect } from 'react'
+// import axios from 'axios'
+// import { getError } from '../../../utils/error'
 
-const QuestionByCat = ({ questions, catName, catId }) => {
+const QuestionByCat = ({ questions, catName }) => {
   // const [firstParrent, changeParrent] = useState(null)
 
   /* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    async function getFirstParrentId() {
-      try {
-        const { data } = await axios.get(`/api/category/parrent/${catId}`)
-        console.log('parrent : ', data)
-        changeParrent(data)
-      } catch (err) {
-        console.log(getError(err))
-      }
-    }
-    getFirstParrentId()
-  }, [catId])
+  // useEffect(() => {
+  //   async function getFirstParrentId() {
+  //     try {
+  //       const { data } = await axios.get(`/api/category/parrent/${catId}`)
+  //       console.log('parrent : ', data)
+  //       changeParrent(data)
+  //     } catch (err) {
+  //       console.log(getError(err))
+  //     }
+  //   }
+  //   getFirstParrentId()
+  // }, [catId])
 
   return (
     <Layout title="Questions">
