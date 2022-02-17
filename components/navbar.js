@@ -21,7 +21,8 @@ import {
   DrawerBody,
   List,
   ListItem,
-  ListIcon
+  ListIcon,
+  Text
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
@@ -39,13 +40,17 @@ const GroupDrawer = ({ toggle, isOpen }) => {
         <DrawerHeader borderBottomWidth="1px">گروهبندی احکام:</DrawerHeader>
         <DrawerBody>
           {menuItems.map(item => (
-            <List spacing={3} key={item._id}>
+            <List spacing={5} key={item._id}>
               <ListItem m={5}>
-                <ListIcon color="blue.500">
-                  <FaLayerGroup size="md" />
-                </ListIcon>
                 <NextLink href={`/question/category/${item._id}`} passHref>
-                  <Link onClick={toggle}>{item.name}</Link>
+                  <Link onClick={toggle}>
+                    <Text color="gray">
+                      <ListIcon color={'green.500'} size="md">
+                        <FaLayerGroup />
+                      </ListIcon>
+                      {item.name}
+                    </Text>
+                  </Link>
                 </NextLink>
               </ListItem>
             </List>

@@ -17,12 +17,14 @@ const Section = dynamic(() => import('../components/section'))
 
 import db from '../utils/db'
 import Question from '../models/question'
+import Category from '../models/category'
 
 import {
   AppContainer,
   ExtraInfo,
   Item
 } from '../components/carousel/components'
+import Cookies from 'js-cookie'
 
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
 const Paragraph = dynamic(() => import('../components/paragraph'))
@@ -125,6 +127,10 @@ export async function getStaticProps() {
   const questions = await Question.find({ status: true })
     .sort({ createdAt: -1 })
     .lean()
+  const categories = await Category.find({ parrent_id: null })
+    .sort({ createdAt: -1 })
+    .lean()
+  Cookies.set('menuItems', JSON.stringify(categories))
 
   await db.disconnect()
   return {
