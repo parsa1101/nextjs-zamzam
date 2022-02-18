@@ -3,9 +3,9 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useEffect, useReducer } from 'react'
-// import { CircularProgress, List, ListItem, Typography } from '@material-ui/core'
+
 import { getError } from '../../../utils/error'
-// import useStyles from '../../../utils/style'
+
 import Cookies from 'js-cookie'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
 import {
@@ -22,7 +22,8 @@ import {
   Box,
   List,
   ListItem,
-  CircularProgress
+  CircularProgress,
+  Text
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import { BiEditAlt } from 'react-icons/bi'
@@ -56,7 +57,6 @@ function reducer(state, action) {
 
 function AdminRoles() {
   const router = useRouter()
-  const classes = useStyles()
 
   const userId = Cookies.get('userId')
   const token = Cookies.get('userToken')
@@ -147,7 +147,7 @@ function AdminRoles() {
                 {loading ? (
                   <CircularProgress />
                 ) : error ? (
-                  <typography className={classes.error}>{error}</typography>
+                  <Text>{error}</Text>
                 ) : (
                   <Table>
                     <Thead>

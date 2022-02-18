@@ -4,9 +4,9 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useForm } from 'react-hook-form'
-// import AdminLayout from '../../../components/layouts/admin'
+
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
-// import useStyle from '../../../utils/style'
+import styled from '@emotion/styled'
 
 import Cookies from 'js-cookie'
 import { getError } from '../../../utils/error'
@@ -22,6 +22,7 @@ import {
   Select,
   useToast
 } from '@chakra-ui/react'
+
 function InsertCategory() {
   const userId = Cookies.get('userId')
 
@@ -30,6 +31,13 @@ function InsertCategory() {
   const toast = useToast()
 
   const router = useRouter()
+
+  const ShowForm = styled.form`
+  width: '100%',
+  maxWidth: 800,
+  margin: '0 auto',
+  direction: 'rtl',
+  `
 
   const {
     handleSubmit,
@@ -64,8 +72,6 @@ function InsertCategory() {
     }
     getCategories()
   }, [userId])
-
-  const classes = useStyle()
 
   const submitHandler = async ({ name }) => {
     if (userId === undefined) {
@@ -118,10 +124,7 @@ function InsertCategory() {
                 mt={10}
                 mb={20}
               >
-                <form
-                  onSubmit={handleSubmit(submitHandler)}
-                  className={classes.form}
-                >
+                <ShowForm onSubmit={handleSubmit(submitHandler)}>
                   <FormControl isInvalid={errors.name}>
                     <FormLabel htmlFor="name">نام دسته بندی :</FormLabel>
                     <Input
@@ -173,7 +176,7 @@ function InsertCategory() {
                   >
                     ذخیره
                   </Button>
-                </form>
+                </ShowForm>
               </Box>
             </Center>
           </Box>

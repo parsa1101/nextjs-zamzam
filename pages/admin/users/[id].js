@@ -44,7 +44,7 @@ function EditUser() {
 
   const token = Cookies.get('userToken')
 
-  // const [roles, setRoles] = useState([])
+  const [roles, setRoles] = useState([])
 
   const [userRoles, setUserRoles] = useState([])
 
@@ -93,6 +93,7 @@ function EditUser() {
           headers: { authorization: `Bearer ${token}` }
         })
         setRoles(data)
+        console.log(roles)
       } catch (err) {
         toast({
           title: getError(err),

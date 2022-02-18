@@ -5,7 +5,7 @@ import React, { useContext, useReducer } from 'react'
 import Dropzone from 'react-dropzone'
 import { getError } from '../../utils/error'
 import LayoutContext from '../../utils/Store'
-// import useStyles from '../../utils/style'
+import styled from '@emotion/styled'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -26,7 +26,20 @@ function reducer(state, action) {
 }
 
 export default function UploadFile({ onUpload }) {
-  const classes = useStyles()
+  const DropZoneBox = styled.div`
+  background: '#eee',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '100px',
+    padding: '10px',
+    cursor: 'pointer',
+    height: '150px',
+    width: '400px',
+    border: '2px dashed cyan',
+    outline: 'none',
+    margin: 'auto',
+`
 
   const toast = useToast()
 
@@ -94,7 +107,7 @@ export default function UploadFile({ onUpload }) {
   }
 
   return (
-    <div className={classes.dropzone}>
+    <DropZoneBox>
       <Dropzone
         onDrop={onDrop}
         accept="audio/mpeg,video/mp4,video/mpeg"
@@ -131,6 +144,6 @@ export default function UploadFile({ onUpload }) {
         }}
       </Dropzone>
       {loadingUpload && <Spinner />}
-    </div>
+    </DropZoneBox>
   )
 }

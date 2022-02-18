@@ -8,6 +8,7 @@ import { GridItem } from '../../../components/grid-item'
 import db from '../../../utils/db'
 import Question from '../../../models/question'
 import Category from '../../../models/category'
+import TreeCatSelect from '../../../components/TreeCatSelect'
 // import 'antd/dist/antd.css'
 // const TreeCatSelect = dynamic(() =>
 //   import('../../../components/treeCatSelect/TreeSelect')
@@ -17,23 +18,6 @@ import Category from '../../../models/category'
 // import { getError } from '../../../utils/error'
 
 const QuestionByCat = ({ questions, catName }) => {
-  // const [firstParrent, changeParrent] = useState(null)
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  // useEffect(() => {
-  //   async function getFirstParrentId() {
-  //     try {
-  //       const { data } = await axios.get(`/api/category/parrent/${catId}`)
-  //       console.log('parrent : ', data)
-  //       changeParrent(data)
-  //     } catch (err) {
-  //       console.log(getError(err))
-  //     }
-  //   }
-  //   getFirstParrentId()
-  // }, [catId])
-
   return (
     <Layout title="Questions">
       <Container>
@@ -42,6 +26,7 @@ const QuestionByCat = ({ questions, catName }) => {
         </Heading>
 
         <Section delay={0.1}>
+          <TreeCatSelect />
           {/* {firstParrent && (
             <TreeCatSelect
               catId={firstParrent._id}

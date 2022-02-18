@@ -30,6 +30,8 @@ import { IoLogoGithub } from 'react-icons/io5'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { FaLayerGroup } from 'react-icons/fa'
+import axios from 'axios'
+import { useRouter } from 'next/router'
 
 const GroupDrawer = ({ toggle, isOpen }) => {
   const menuItems = JSON.parse(Cookies.get('menuItems'))
@@ -88,6 +90,8 @@ const Navbar = props => {
   const [showDrawer1, setShowDrawer1] = useState(false)
   const [showDrawer2, setShowDrawer2] = useState(false)
 
+  const router = useRouter()
+
   function toggleDrawer1() {
     setShowDrawer1(!showDrawer1)
   }
@@ -109,7 +113,6 @@ const Navbar = props => {
       )
     }
 
-    ctx.logout()
     Cookies.remove('userId')
     Cookies.remove('userToken')
     router.push('/')

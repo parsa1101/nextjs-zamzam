@@ -57,17 +57,17 @@ function EditAnswerScreen({ answer }) {
 
   /* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    if (player) {
-      player.unload({ loading: true })
-    }
-  }, [player])
+  // useEffect(() => {
+  //   if (player) {
+  //     player.unload({ loading: true })
+  //   }
+  // }, [player])
 
-  useEffect(() => {
-    if (player && filename) {
-      player.src(filename)
-    }
-  }, [filename, player])
+  // useEffect(() => {
+  //   if (player && filename) {
+  //     player.src(filename)
+  //   }
+  // }, [filename, player])
 
   const {
     handleSubmit,

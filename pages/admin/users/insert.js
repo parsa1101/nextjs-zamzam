@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
 import { useForm } from 'react-hook-form'
@@ -39,7 +39,7 @@ function InsertUser() {
 
   const userId = Cookies.get('userId')
 
-  // const [roles, setRoles] = useState([])
+  const [roles, setRoles] = useState([])
 
   // const [selectedRoles, setSelectedRoles] = useState([])
 
@@ -66,6 +66,7 @@ function InsertUser() {
           headers: { authorization: `Bearer ${token}` }
         })
         setRoles(data)
+        console.log(roles)
       } catch (err) {
         toast({
           title: getError(err),
@@ -94,8 +95,8 @@ function InsertUser() {
           nameFamily: values.nameFamily,
           email: values.email,
           mobile: values.mobile,
-          password: values.password,
-          userRoles: selectedRoles
+          password: values.password
+          // userRoles: selectedRoles
         },
         { headers: { authorization: `Bearer ${token}` } }
       )

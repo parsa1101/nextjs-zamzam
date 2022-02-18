@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 import React, { useReducer } from 'react'
 import Dropzone from 'react-dropzone'
 import { getError } from '../../utils/error'
-// import useStyles from '../../utils/style'
+import styled from '@emotion/styled'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -26,7 +26,20 @@ function reducer(state, action) {
 }
 
 export default function UploadImage({ onUpload }) {
-  const classes = useStyles()
+  const DropZoneBox = styled.div`
+  background: '#eee',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '100px',
+    padding: '10px',
+    cursor: 'pointer',
+    height: '150px',
+    width: '400px',
+    border: '2px dashed cyan',
+    outline: 'none',
+    margin: 'auto',
+`
 
   const [{ loadingUpload }, dispatch] = useReducer(reducer, {
     loadingUpload: false,
@@ -79,7 +92,7 @@ export default function UploadImage({ onUpload }) {
   }
 
   return (
-    <div className={classes.dropzone}>
+    <DropZoneBox>
       <Dropzone
         onDrop={onDrop}
         accept="image/jpeg,image/bmp,image/png"
@@ -116,6 +129,6 @@ export default function UploadImage({ onUpload }) {
         }}
       </Dropzone>
       {loadingUpload && <CircularProgress />}
-    </div>
+    </DropZoneBox>
   )
 }

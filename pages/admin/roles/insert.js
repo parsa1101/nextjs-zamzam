@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useForm } from 'react-hook-form'
-// import useStyle from '../../../utils/style'
+import styled from '@emotion/styled'
 
 import Cookies from 'js-cookie'
 import { getError } from '../../../utils/error'
@@ -86,7 +86,12 @@ function InsertRole() {
     }
   }, [userId])
 
-  const classes = useStyle()
+  const ShowForm = styled.form`
+  width: '100%',
+  maxWidth: 800,
+  margin: '0 auto',
+  direction: 'rtl',
+  `
 
   const submitHandler = async ({ name, permission }) => {
     if (userId === undefined) {
@@ -177,10 +182,7 @@ function InsertRole() {
                 mt={10}
                 mb={20}
               >
-                <form
-                  onSubmit={handleSubmit(submitHandler)}
-                  className={classes.form}
-                >
+                <ShowForm onSubmit={handleSubmit(submitHandler)}>
                   <FormControl isInvalid={errors.permission}>
                     <FormLabel htmlFor="name">نام نقش</FormLabel>
                     <Input
@@ -242,7 +244,7 @@ function InsertRole() {
                   >
                     ذخیره
                   </Button>
-                </form>
+                </ShowForm>
                 {loading ? (
                   <CircularProgress />
                 ) : (

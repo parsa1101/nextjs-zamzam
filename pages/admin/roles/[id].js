@@ -5,7 +5,6 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useForm } from 'react-hook-form'
-// import useStyle from '../../../utils/style'
 
 import Cookies from 'js-cookie'
 import { getError } from '../../../utils/error'
@@ -31,6 +30,7 @@ import {
 import { AiFillDelete } from 'react-icons/ai'
 import db from '../../../utils/db'
 import Role from '../../../models/role'
+import styled from '@emotion/styled'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -90,8 +90,6 @@ function EditRole({ role }) {
       name: role.name
     })
   }, [userId])
-
-  const classes = useStyle()
 
   const submitHandler = async ({ name, permission }) => {
     if (userId === undefined) {
@@ -161,6 +159,13 @@ function EditRole({ role }) {
       })
     }
   }
+
+  const ShowForm = styled.form`
+  width: '100%',
+  maxWidth: 800,
+  margin: '0 auto',
+  direction: 'rtl',
+  `
   return (
     <AdminLayout>
       <Container maxW="container.xl" p={5}>
@@ -182,10 +187,7 @@ function EditRole({ role }) {
                 mt={10}
                 mb={20}
               >
-                <form
-                  onSubmit={handleSubmit(submitHandler)}
-                  className={classes.form}
-                >
+                <ShowForm onSubmit={handleSubmit(submitHandler)}>
                   <FormControl isInvalid={errors.permission}>
                     <FormLabel htmlFor="name">نام نقش</FormLabel>
                     <Input
@@ -247,7 +249,7 @@ function EditRole({ role }) {
                   >
                     ذخیره
                   </Button>
-                </form>
+                </ShowForm>
                 {loading ? (
                   <CircularProgress />
                 ) : (

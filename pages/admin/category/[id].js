@@ -6,7 +6,7 @@ import Category from '../../../models/category'
 
 import { useForm } from 'react-hook-form'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
-// import useStyle from '../../../utils/style'
+import styled from '@emotion/styled'
 
 import Cookies from 'js-cookie'
 import { getError } from '../../../utils/error'
@@ -23,7 +23,14 @@ import {
   useToast
 } from '@chakra-ui/react'
 import db from '../../../utils/db'
+
 function EditCategory({ category }) {
+  const ShowForm = styled.form`
+  width: '100%',
+  maxWidth: 800,
+  margin: '0 auto',
+  direction: 'rtl',
+  `
   const userId = Cookies.get('userId')
 
   const token = Cookies.get('userToken')
@@ -68,8 +75,6 @@ function EditCategory({ category }) {
     }
     getCategories()
   }, [userId])
-
-  const classes = useStyle()
 
   const submitHandler = async ({ name }) => {
     if (userId === undefined) {
@@ -123,10 +128,7 @@ function EditCategory({ category }) {
                 mt={10}
                 mb={20}
               >
-                <form
-                  onSubmit={handleSubmit(submitHandler)}
-                  className={classes.form}
-                >
+                <ShowForm onSubmit={handleSubmit(submitHandler)}>
                   <FormControl isInvalid={errors.name}>
                     <FormLabel htmlFor="name">نام دسته بندی :</FormLabel>
                     <Input
@@ -179,7 +181,7 @@ function EditCategory({ category }) {
                   >
                     ذخیره
                   </Button>
-                </form>
+                </ShowForm>
               </Box>
             </Center>
           </Box>
