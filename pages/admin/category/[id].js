@@ -191,24 +191,24 @@ function EditCategory({ category }) {
   )
 }
 
-export const getStaticPaths = async () => {
-  await db.connect()
+// export const getStaticPaths = async () => {
+//   await db.connect()
 
-  const categories = await Category.find({})
-  await db.disconnect()
+//   const categories = await Category.find({})
+//   await db.disconnect()
 
-  // generate the paths
-  const paths = categories.map(item => ({
-    params: { id: item._id.toString() }
-  }))
+//   // generate the paths
+//   const paths = categories.map(item => ({
+//     params: { id: item._id.toString() }
+//   }))
 
-  return {
-    paths,
-    fallback: true
-  }
-}
+//   return {
+//     paths,
+//     fallback: true
+//   }
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context
   const { id } = params
   await db.connect()

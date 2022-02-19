@@ -109,24 +109,24 @@ const QuestionScreen = ({ question, answer }) => {
 
 export default QuestionScreen
 
-export const getStaticPaths = async () => {
-  await db.connect()
+// export const getStaticPaths = async () => {
+//   await db.connect()
 
-  const questions = await Question.find({})
-  await db.disconnect()
+//   const questions = await Question.find({})
+//   await db.disconnect()
 
-  // generate the paths
-  const paths = questions.map(question => ({
-    params: { slug: question.slug }
-  }))
+//   // generate the paths
+//   const paths = questions.map(question => ({
+//     params: { slug: question.slug }
+//   }))
 
-  return {
-    paths,
-    fallback: true
-  }
-}
+//   return {
+//     paths,
+//     fallback: true
+//   }
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context
   const { slug } = params
   await db.connect()

@@ -287,24 +287,24 @@ function EditAnswerScreen({ answer }) {
   )
 }
 
-export const getStaticPaths = async () => {
-  await db.connect()
+// export const getStaticPaths = async () => {
+//   await db.connect()
 
-  const answers = await Answer.find({})
-  await db.disconnect()
+//   const answers = await Answer.find({})
+//   await db.disconnect()
 
-  // generate the paths
-  const paths = answers.map(answer => ({
-    params: { id: answer._id.toString() }
-  }))
+//   // generate the paths
+//   const paths = answers.map(answer => ({
+//     params: { id: answer._id.toString() }
+//   }))
 
-  return {
-    paths,
-    fallback: true
-  }
-}
+//   return {
+//     paths,
+//     fallback: true
+//   }
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context
   const { id } = params
 

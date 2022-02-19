@@ -13,6 +13,7 @@ let findCat = null
 handler.get(async (req, res) => {
   await db.connect()
   const { id } = req.query
+
   const cat = await Category.findById(id)
 
   findCat = cat

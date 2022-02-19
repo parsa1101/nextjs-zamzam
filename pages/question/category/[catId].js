@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import dynamic from 'next/dynamic'
 
 import { Container, Heading, SimpleGrid, Text } from '@chakra-ui/react'
@@ -13,11 +14,25 @@ import TreeCatSelect from '../../../components/TreeCatSelect'
 // const TreeCatSelect = dynamic(() =>
 //   import('../../../components/treeCatSelect/TreeSelect')
 // )
-// import { useEffect } from 'react'
+import { useEffect } from 'react'
 // import axios from 'axios'
 // import { getError } from '../../../utils/error'
 
-const QuestionByCat = ({ questions, catName }) => {
+const QuestionByCat = ({ questions, catName, catId }) => {
+  useEffect(() => {
+    async function getFirstParrentId() {
+      // try {
+      //   const { data } = await axios.get(`/api/category/parrent/${catId}`)
+
+      //   changeParrent(data)
+      // } catch (err) {
+      //   console.log(getError(err))
+      // }
+      console.log(catId)
+    }
+    getFirstParrentId()
+  }, [])
+
   return (
     <Layout title="Questions">
       <Container>
@@ -26,7 +41,7 @@ const QuestionByCat = ({ questions, catName }) => {
         </Heading>
 
         <Section delay={0.1}>
-          <TreeCatSelect />
+          <TreeCatSelect catId={catId} />
           {/* {firstParrent && (
             <TreeCatSelect
               catId={firstParrent._id}
@@ -55,24 +70,24 @@ const QuestionByCat = ({ questions, catName }) => {
   )
 }
 
-export const getStaticPaths = async () => {
-  await db.connect()
+// export const getStaticPaths = async () => {
+//   await db.connect()
 
-  const cats = await Category.find({})
-  await db.disconnect()
+//   const cats = await Category.find({})
+//   await db.disconnect()
 
-  // generate the paths
-  const paths = cats.map(cat => ({
-    params: { catId: cat._id.toString() }
-  }))
+//   // generate the paths
+//   const paths = cats.map(cat => ({
+//     params: { catId: cat._id.toString() }
+//   }))
 
-  return {
-    paths,
-    fallback: true
-  }
-}
+//   return {
+//     paths,
+//     fallback: true
+//   }
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context
   const { catId } = params
   await db.connect()

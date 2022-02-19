@@ -92,7 +92,7 @@ export default function AnswerScreen() {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   await db.connect()
   const categories = await Category.find({ parrent_id: undefined }).lean()
 

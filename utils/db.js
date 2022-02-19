@@ -4,8 +4,6 @@ const connection = {}
 // const { uis } = mongoose.connection.collections;
 // uis.drop();
 async function connect() {
-  // const { favorites } = mongoose.connection.collections;
-  // await favorites.drop();
   if (connection.isConnected) {
     console.log('already connected')
     return

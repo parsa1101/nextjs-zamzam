@@ -123,7 +123,7 @@ const Home = ({ questions, categories }) => {
 }
 export default Home
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   await db.connect()
   const questions = await Question.find({ status: true })
     .sort({ createdAt: -1 })

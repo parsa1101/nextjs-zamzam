@@ -286,24 +286,24 @@ function EditRole({ role }) {
   )
 }
 
-export const getStaticPaths = async () => {
-  await db.connect()
+// export const getStaticPaths = async () => {
+//   await db.connect()
 
-  const roles = await Role.find({})
-  await db.disconnect()
+//   const roles = await Role.find({})
+//   await db.disconnect()
 
-  // generate the paths
-  const paths = roles.map(role => ({
-    params: { id: role._id.toString() }
-  }))
+//   // generate the paths
+//   const paths = roles.map(role => ({
+//     params: { id: role._id.toString() }
+//   }))
 
-  return {
-    paths,
-    fallback: true
-  }
-}
+//   return {
+//     paths,
+//     fallback: true
+//   }
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { params } = context
   const { id } = params
   await db.connect()
