@@ -90,7 +90,6 @@ function CreatequestionScreen() {
   }, [userId])
 
   const onSubmit = async values => {
-    console.log(page)
     if (!mediaName) {
       toast({
         title: 'لطفا تصویر احکام را بارگذاری کنید!',

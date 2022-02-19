@@ -118,7 +118,7 @@ function EditQuestionScreen({ question, answers }) {
 export async function getServerSideProps(context) {
   const { params } = context
   const { id } = params
-  console.log(id)
+
   await db.connect()
   const answers = await TemporaryAnswer.find({ questionId: id }).lean()
   const question = await TemporaryQuestion.findById(id).lean()

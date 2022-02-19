@@ -122,7 +122,7 @@ export default function UsersDashboard() {
     }
     fetchData()
   }, [])
-  console.log(tr1)
+
   return (
     <Flex flexDir="column">
       <Heading as="h2" size="xl">

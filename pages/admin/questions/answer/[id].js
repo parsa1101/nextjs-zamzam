@@ -100,8 +100,6 @@ function EditAnswerScreen({ answer }) {
   // }
 
   const onSubmit = async values => {
-    console.log(values, filename)
-
     try {
       const { data } = await axios.put(
         `/api/admin/question/editAnswer/${answer._id}`,

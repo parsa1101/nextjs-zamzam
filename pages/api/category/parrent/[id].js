@@ -17,13 +17,15 @@ handler.get(async (req, res) => {
   const cat = await Category.findById(id)
 
   findCat = cat
-  // console.log('cat:', findCat)
 
   if (cat.parrent_id) {
     getFirstParrentId(cat.parrent_id)
   }
+
+  const count = await Category.count({ parrent_id: findCat._id })
   await db.disconnect()
-  res.send(findCat)
+
+  res.send({ findCat, count })
 })
 
 async function getFirstParrentId(id) {

@@ -113,7 +113,7 @@ function EditQuestionScreen({ question }) {
       })
       return
     }
-    console.log(values, catId2)
+
     try {
       const { data } = await axios.put(
         `/api/admin/question/${question._id}`,
