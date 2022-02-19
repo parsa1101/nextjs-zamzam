@@ -1,14 +1,10 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Button,
   CircularProgress,
-  CloseButton,
   List,
   ListIcon,
-  ListItem
+  ListItem,
+  useToast
 } from '@chakra-ui/react'
 import React from 'react'
 
@@ -19,30 +15,29 @@ import { useRouter } from 'next/router'
 
 export default function TreeCatSelect({ catId }) {
   const fetcher = (...args) => fetch(...args).then(res => res.json())
+  const toast = useToast()
 
-  const { data, error } = useSWR(`/api/category/${catId}`, fetcher)
+  const { data } = useSWR(`/api/category/${catId}`, fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      // Never retry on 404.
+      if (error) {
+        toast({
+          title: 'خطا',
+          description: 'متاسفانه در بازیابی اطلاعات مشکلی به وجود آمده است.',
+          status: 'error',
+          duration: 9000
+        })
+      }
+
+      if (retryCount >= 10) return
+
+      // Retry after 5 seconds.
+      setTimeout(() => revalidate({ retryCount }), 5000)
+    }
+  })
 
   const router = useRouter()
 
-  if (error)
-    return (
-      <Alert
-        status="success"
-        variant="subtle"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        textAlign="center"
-        height="200px"
-      >
-        <AlertIcon boxSize="40px" mr={0} />
-        <AlertTitle mt={4} mb={1} fontSize="lg">
-          خطا!
-          <CloseButton position="absolute" right="8px" top="8px" />
-        </AlertTitle>
-        <AlertDescription maxWidth="sm">{error}</AlertDescription>
-      </Alert>
-    )
   if (!data)
     return (
       <div>

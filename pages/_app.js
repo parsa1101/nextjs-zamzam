@@ -5,10 +5,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import Fonts from '../components/Font'
 import theme from '../lib/theme'
 import { RtlProvider } from '../components/rtl'
-// import Layout from '../components/layouts/main'
 const Layout = dynamic(() => import('../components/layouts/main'))
 import { LayoutContextProvider } from '../utils/Store'
-// import { AnimatePresence } from 'framer-motion'
 const { AnimatePresence } = require('framer-motion')
 
 import { useEffect, useState } from 'react'
