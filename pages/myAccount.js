@@ -19,29 +19,26 @@ import {
   useToast
 } from '@chakra-ui/react'
 import { FaLock } from 'react-icons/fa'
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
-import LayoutContext from '../utils/Store'
-import { getError } from '../utils/error'
-import { useRouter } from 'next/router'
+
 import { MdAlternateEmail, MdPhoneIphone } from 'react-icons/md'
-import Cookies from 'js-cookie'
+import useSWR from 'swr'
+import axios from 'axios'
+// import Cookies from 'js-cookie'
 
 const CFaLock = chakra(FaLock)
 
-const LoginScreen = () => {
-  const ctx = useContext(LayoutContext)
-  const token = Cookies.get('userToken')
-  const userId = Cookies.get('userId')
+const MyAccountScreen = ({ userId, userToken }) => {
+  // const ctx = useContext(LayoutContext)
+  // const token = Cookies.get('userToken')
 
-  const router = useRouter()
+  // const router = useRouter()
 
   const toast = useToast()
 
   const {
-    handleSubmit,
     register,
     reset,
     formState: { errors, isSubmitting }
@@ -52,80 +49,106 @@ const LoginScreen = () => {
     }
   })
 
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  useEffect(() => {
-    if (!userId) {
-      return router.push('/login?redirect=/myAccount')
-    } else {
-      getUser()
-    }
-    async function getUser() {
-      try {
-        const { data } = await axios.post(
-          `/api/auth/${userId}`,
-          {
-            token: '1'
-          },
-          {
-            headers: { authorization: `Bearer ${token}` }
-          }
-        )
-
+  const fetcher = (url, token) =>
+    axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res =>
         reset({
-          email: data.email,
-          mobile: data.mobile
+          email: res.data.email,
+          mobile: res.data.mobile
         })
-      } catch (err) {
+      )
+
+  useSWR([`/api/auth/${userId}`, userToken], fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      if (error) {
         toast({
-          title: getError(err),
+          title: 'خطا',
+          description: 'متاسفانه در بازیابی اطلاعات مشکلی به وجود آمده است.',
           status: 'error',
-          isClosable: true
+          duration: 9000
         })
       }
+
+      if (retryCount >= 10) return
+
+      // Retry after 5 seconds.
+      setTimeout(() => revalidate({ retryCount }), 5000)
     }
-  }, [])
+  })
+
+  // useEffect(() => {
+  //   if (!userId) {
+  //     return router.push('/login?redirect=/myAccount')
+  //   } else {
+  //     getUser()
+  //   }
+  //   async function getUser() {
+  //     try {
+  //       const { data } = await axios.post(
+  //         `/api/auth/${userId}`,
+  //         {
+  //           token: '1'
+  //         },
+  //         {
+  //           headers: { authorization: `Bearer ${token}` }
+  //         }
+  //       )
+
+  //       reset({
+  //         email: data.email,
+  //         mobile: data.mobile
+  //       })
+  //     } catch (err) {
+  //       toast({
+  //         title: getError(err),
+  //         status: 'error',
+  //         isClosable: true
+  //       })
+  //     }
+  //   }
+  // }, [])
 
   const [showPassword, setShowPassword] = useState(false)
 
   const handleShowClick = () => setShowPassword(!showPassword)
 
-  const onSubmit = async ({ email, mobile, password, rePassword }) => {
-    if (password !== rePassword) {
-      toast({
-        title: 'رمز عبور و تکرار آن با هم برابر نیستند!',
-        status: 'error',
-        isClosable: true
-      })
-      return
-    }
-    try {
-      const { data } = await axios.put(
-        '/api/auth/updateUser',
-        {
-          email,
-          mobile,
-          password
-        },
-        { headers: { authorization: `Bearer ${token}` } }
-      )
+  // const onSubmit = async ({ email, mobile, password, rePassword }) => {
+  //   if (password !== rePassword) {
+  //     toast({
+  //       title: 'رمز عبور و تکرار آن با هم برابر نیستند!',
+  //       status: 'error',
+  //       isClosable: true
+  //     })
+  //     return
+  //   }
+  //   try {
+  //     const { data } = await axios.put(
+  //       '/api/auth/updateUser',
+  //       {
+  //         email,
+  //         mobile,
+  //         password
+  //       },
+  //       { headers: { authorization: `Bearer ${token}` } }
+  //     )
 
-      ctx.setUserInfo(data)
-      toast({
-        title: 'اطلاعات وارد شده با موفقیت ثبت شد.',
-        status: 'success',
-        isClosable: true
-      })
-      router.push('/')
-    } catch (err) {
-      toast({
-        title: getError(err),
-        status: 'error',
-        isClosable: true
-      })
-      return
-    }
-  }
+  //     ctx.setUserInfo(data)
+  //     toast({
+  //       title: 'اطلاعات وارد شده با موفقیت ثبت شد.',
+  //       status: 'success',
+  //       isClosable: true
+  //     })
+  //     router.push('/')
+  //   } catch (err) {
+  //     toast({
+  //       title: getError(err),
+  //       status: 'error',
+  //       isClosable: true
+  //     })
+  //     return
+  //   }
+  // }
 
   return (
     <Layout title="myAccount">
@@ -150,7 +173,7 @@ const LoginScreen = () => {
           </Center>
 
           <Box minW={{ base: '90%', md: '468px' }}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <Stack
                 spacing={4}
                 p="1rem"
@@ -296,5 +319,15 @@ const LoginScreen = () => {
     </Layout>
   )
 }
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+  const userToken = context.req.cookies['userToken']
 
-export default LoginScreen
+  return {
+    props: {
+      userId,
+      userToken
+    }
+  }
+}
+export default MyAccountScreen

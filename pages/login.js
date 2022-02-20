@@ -67,6 +67,9 @@ const LoginScreen = () => {
       })
 
       ctx.setUserInfo(data)
+      const userId = data._id.toString()
+      Cookies.set('userId', userId)
+      Cookies.set('userToken', data.token)
       router.push(redirect || '/')
     } catch (err) {
       toast({

@@ -24,4 +24,12 @@ handler.post(async (req, res) => {
   }
 })
 
+handler.get(async (req, res) => {
+  await db.connect()
+  const { userId } = req.query
+  const user = await User.findById(userId)
+  await db.disconnect()
+  res.send(user)
+})
+
 export default handler

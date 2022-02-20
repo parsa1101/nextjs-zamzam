@@ -22,11 +22,15 @@ import {
   List,
   ListItem,
   ListIcon,
-  Text
+  Text,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
-import { IoLogoGithub } from 'react-icons/io5'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { FaLayerGroup } from 'react-icons/fa'
@@ -166,18 +170,15 @@ const Navbar = props => {
           {showDrawer1 && (
             <GroupDrawer toggle={toggleDrawer1} isOpen={showDrawer1} />
           )}
-          <LinkItem
-            _target="_blank"
-            href="https://github.com/craftzdog/craftzdog-homepage"
-            path={path}
-            display="inline-flex"
-            alignItems="center"
-            style={{ gap: 4 }}
-            pl={2}
-          >
-            <IoLogoGithub />
-            اطلاعات کاربری
-          </LinkItem>
+
+          <Menu isLazy>
+            <MenuButton>اطلاعات کاربری</MenuButton>
+            <MenuList>
+              {/* MenuItems are not rendered unless Menu is open */}
+              <MenuItem>ثبت اطلاعات به عنوان کارشناس</MenuItem>
+              <MenuItem>نمابش اطلاعات کاربری</MenuItem>
+            </MenuList>
+          </Menu>
         </Stack>
 
         <Box flex={1} align="right">
@@ -197,23 +198,21 @@ const Navbar = props => {
                     <MenuItem as={Link}> عضویت/ورود</MenuItem>
                   </NextLink>
                 )}
-                {userId && (
-                  <Button variant="ghost" onClick={logoutHandler}>
-                    خروج
-                  </Button>
-                )}
+
                 <Button variant="ghost" onClick={toggleDrawer2}>
                   گروهبندی احکام
                 </Button>
                 {showDrawer2 && (
                   <GroupDrawer toggle={toggleDrawer2} isOpen={showDrawer2} />
                 )}
-                <MenuItem
-                  as={Link}
-                  href="https://github.com/craftzdog/craftzdog-homepage"
-                >
-                  View Source
-                </MenuItem>
+
+                <SubMenu />
+                {userId && (
+                  <Button variant="ghost" onClick={logoutHandler}>
+                    خروج
+                  </Button>
+                )}
+                <hr />
               </MenuList>
             </Menu>
           </Box>
@@ -222,5 +221,43 @@ const Navbar = props => {
     </Box>
   )
 }
-
+const SubMenu = () => {
+  return (
+    <Accordion allowToggle>
+      <AccordionItem>
+        <h2>
+          <AccordionButton>
+            <Box flex="1" textAlign="left">
+              اطلاعات کاربری
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <LinkItem
+            _target="_blank"
+            href="/myAccount"
+            display="inline-flex"
+            alignItems="center"
+            style={{ gap: 4 }}
+            pl={2}
+          >
+            ویرایش اطلاعات کاربری
+          </LinkItem>
+          <hr />
+          <LinkItem
+            _target="_blank"
+            href="/myAccount"
+            display="inline-flex"
+            alignItems="center"
+            style={{ gap: 4 }}
+            pl={2}
+          >
+            ثبت اطلاعات به عنوان کارشناس
+          </LinkItem>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  )
+}
 export default Navbar
