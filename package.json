@@ -17,6 +17,7 @@
     "axios": "^0.26.0",
     "axios-jsonp": "^1.0.4",
     "bcryptjs": "^2.4.3",
+    "chakra-ui-steps": "^1.6.1",
     "chart.js": "^3.7.1",
     "framer-motion": "^6.2.6",
     "jalali-moment": "^3.3.11",

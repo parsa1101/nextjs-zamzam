@@ -171,8 +171,16 @@ const Navbar = props => {
             <Menu isLazy>
               <MenuButton>اطلاعات کاربری</MenuButton>
               <MenuList>
-                {/* MenuItems are not rendered unless Menu is open */}
-                <MenuItem>ثبت اطلاعات به عنوان کارشناس</MenuItem>
+                <LinkItem
+                  _target="_blank"
+                  href="/wizard"
+                  display="inline-flex"
+                  alignItems="center"
+                  style={{ gap: 4 }}
+                  pl={2}
+                >
+                  ثبت اطلاعات به عنوان کارشناس
+                </LinkItem>
                 <MenuItem>
                   <LinkItem
                     _target="_blank"
@@ -181,6 +189,7 @@ const Navbar = props => {
                     alignItems="center"
                     style={{ gap: 4 }}
                     pl={2}
+                    path={path}
                   >
                     ویرایش اطلاعات کاربری
                   </LinkItem>
@@ -261,7 +270,7 @@ const SubMenu = () => {
           <hr />
           <LinkItem
             _target="_blank"
-            href="/myAccount"
+            href="/wizard"
             display="inline-flex"
             alignItems="center"
             style={{ gap: 4 }}

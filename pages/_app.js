@@ -12,22 +12,6 @@ const { AnimatePresence } = require('framer-motion')
 import { useEffect, useState } from 'react'
 
 function MyApp({ Component, pageProps, router }) {
-  // const [menuItems, setMenuItems] = useState({ data: [] })
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  // useEffect(() => {
-  //   async function getMenuItem() {
-  //     try {
-  //       const { data } = await axios.get(`/api/category`)
-  //       setMenuItems(prev => ({ ...prev, data: data }))
-  //     } catch (err) {
-  //       alert(err)
-  //     }
-  //   }
-  //   getMenuItem()
-  // }, [])
-
   //for Expected server HTML to contain a matching <button> in <div> error
   const [hasMounted, setHasMounted] = useState(false)
   useEffect(() => {

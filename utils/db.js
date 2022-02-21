@@ -94,6 +94,25 @@ function convertDocToObjInTemporaryQuestion(doc) {
   return doc
 }
 
+function convertOtherToObject(doc) {
+  if (doc._id) {
+    doc._id = doc._id.toString()
+  }
+
+  if (doc.userId) {
+    doc.userId = doc.userId.toString()
+  }
+  if (doc.provinceId) {
+    doc.provinceId = doc.provinceId.toString()
+  }
+  if (doc.cityId) {
+    doc.cityId = doc.cityId.toString()
+  }
+  doc.createdAt = doc.createdAt.toString()
+  doc.updatedAt = doc.updatedAt.toString()
+  return doc
+}
+
 const db = {
   connect,
   disconnect,
@@ -101,6 +120,7 @@ const db = {
   convertDocToObjINAnswer,
   convertCategoryToObj,
   convertUserToObj,
-  convertDocToObjInTemporaryQuestion
+  convertDocToObjInTemporaryQuestion,
+  convertOtherToObject
 }
 export default db
