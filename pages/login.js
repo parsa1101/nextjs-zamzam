@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-// import Layout from '../components/layouts/article'
 const Layout = dynamic(() => import('../components/layouts/article'))
 import {
   Flex,
@@ -24,11 +23,11 @@ import { useContext, useEffect, useState } from 'react'
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import LayoutContext from '../utils/Store'
-import { getError } from '../utils/error'
-import { useRouter } from 'next/router'
+
 import { MdPhoneIphone } from 'react-icons/md'
 import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
+import LayoutContext from '../utils/Store'
 
 const CFaLock = chakra(FaLock)
 
@@ -39,16 +38,14 @@ const LoginScreen = () => {
   const toast = useToast()
 
   /* eslint-disable react-hooks/exhaustive-deps */
-
+  const router = useRouter()
+  const { redirect } = router.query
   useEffect(() => {
     if (token) {
       router.push(redirect || '/')
       return
     }
   }, [token])
-
-  const router = useRouter()
-  const { redirect } = router.query
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -73,7 +70,7 @@ const LoginScreen = () => {
       router.push(redirect || '/')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -207,4 +204,20 @@ const LoginScreen = () => {
   )
 }
 
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+
+  if (userId) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {}
+  }
+}
 export default LoginScreen

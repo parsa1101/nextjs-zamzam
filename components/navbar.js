@@ -159,11 +159,7 @@ const Navbar = props => {
               عضویت/ورود
             </LinkItem>
           )}
-          {userId && (
-            <Button variant="ghost" onClick={logoutHandler}>
-              خروج
-            </Button>
-          )}
+
           <Button variant="ghost" onClick={toggleDrawer1}>
             گروهبندی احکام
           </Button>
@@ -171,14 +167,32 @@ const Navbar = props => {
             <GroupDrawer toggle={toggleDrawer1} isOpen={showDrawer1} />
           )}
 
-          <Menu isLazy>
-            <MenuButton>اطلاعات کاربری</MenuButton>
-            <MenuList>
-              {/* MenuItems are not rendered unless Menu is open */}
-              <MenuItem>ثبت اطلاعات به عنوان کارشناس</MenuItem>
-              <MenuItem>نمابش اطلاعات کاربری</MenuItem>
-            </MenuList>
-          </Menu>
+          {userId && (
+            <Menu isLazy>
+              <MenuButton>اطلاعات کاربری</MenuButton>
+              <MenuList>
+                {/* MenuItems are not rendered unless Menu is open */}
+                <MenuItem>ثبت اطلاعات به عنوان کارشناس</MenuItem>
+                <MenuItem>
+                  <LinkItem
+                    _target="_blank"
+                    href="/myAccount"
+                    display="inline-flex"
+                    alignItems="center"
+                    style={{ gap: 4 }}
+                    pl={2}
+                  >
+                    ویرایش اطلاعات کاربری
+                  </LinkItem>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
+          {userId && (
+            <Button variant="ghost" onClick={logoutHandler}>
+              خروج
+            </Button>
+          )}
         </Stack>
 
         <Box flex={1} align="right">
@@ -206,7 +220,7 @@ const Navbar = props => {
                   <GroupDrawer toggle={toggleDrawer2} isOpen={showDrawer2} />
                 )}
 
-                <SubMenu />
+                {userId && <SubMenu />}
                 {userId && (
                   <Button variant="ghost" onClick={logoutHandler}>
                     خروج

@@ -19,28 +19,31 @@ import {
   useToast
 } from '@chakra-ui/react'
 import { FaLock } from 'react-icons/fa'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
 import { useForm } from 'react-hook-form'
 
 import { MdAlternateEmail, MdPhoneIphone } from 'react-icons/md'
 import useSWR from 'swr'
 import axios from 'axios'
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
+import LayoutContext from '../utils/Store'
 
 const CFaLock = chakra(FaLock)
 
 const MyAccountScreen = ({ userId, userToken }) => {
-  // const ctx = useContext(LayoutContext)
-  // const token = Cookies.get('userToken')
+  const ctx = useContext(LayoutContext)
+  const token = Cookies.get('userToken')
 
-  // const router = useRouter()
+  const router = useRouter()
 
   const toast = useToast()
 
   const {
     register,
     reset,
+    handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
@@ -77,79 +80,49 @@ const MyAccountScreen = ({ userId, userToken }) => {
     }
   })
 
-  // useEffect(() => {
-  //   if (!userId) {
-  //     return router.push('/login?redirect=/myAccount')
-  //   } else {
-  //     getUser()
-  //   }
-  //   async function getUser() {
-  //     try {
-  //       const { data } = await axios.post(
-  //         `/api/auth/${userId}`,
-  //         {
-  //           token: '1'
-  //         },
-  //         {
-  //           headers: { authorization: `Bearer ${token}` }
-  //         }
-  //       )
-
-  //       reset({
-  //         email: data.email,
-  //         mobile: data.mobile
-  //       })
-  //     } catch (err) {
-  //       toast({
-  //         title: getError(err),
-  //         status: 'error',
-  //         isClosable: true
-  //       })
-  //     }
-  //   }
-  // }, [])
-
   const [showPassword, setShowPassword] = useState(false)
 
   const handleShowClick = () => setShowPassword(!showPassword)
 
-  // const onSubmit = async ({ email, mobile, password, rePassword }) => {
-  //   if (password !== rePassword) {
-  //     toast({
-  //       title: 'رمز عبور و تکرار آن با هم برابر نیستند!',
-  //       status: 'error',
-  //       isClosable: true
-  //     })
-  //     return
-  //   }
-  //   try {
-  //     const { data } = await axios.put(
-  //       '/api/auth/updateUser',
-  //       {
-  //         email,
-  //         mobile,
-  //         password
-  //       },
-  //       { headers: { authorization: `Bearer ${token}` } }
-  //     )
+  const onSubmit = async ({ email, mobile, password, rePassword }) => {
+    if (password !== rePassword) {
+      toast({
+        title: 'رمز عبور و تکرار آن با هم برابر نیستند!',
+        status: 'error',
+        isClosable: true
+      })
+      return
+    }
 
-  //     ctx.setUserInfo(data)
-  //     toast({
-  //       title: 'اطلاعات وارد شده با موفقیت ثبت شد.',
-  //       status: 'success',
-  //       isClosable: true
-  //     })
-  //     router.push('/')
-  //   } catch (err) {
-  //     toast({
-  //       title: getError(err),
-  //       status: 'error',
-  //       isClosable: true
-  //     })
-  //     return
-  //   }
-  // }
+    await axios
+      .put(
+        '/api/auth/updateUser',
+        {
+          email,
+          mobile,
+          password
+        },
+        { headers: { authorization: `Bearer ${token}` } }
+      )
+      .then(({ data }) => {
+        ctx.setUserInfo(data)
+        toast({
+          title: 'اطلاعات وارد شده با موفقیت ثبت شد.',
+          status: 'success',
+          isClosable: true
+        })
+        router.push('/')
+      })
 
+      .catch(err => {
+        toast({
+          title: err.message,
+          status: 'error',
+          isClosable: true
+        })
+        return
+      })
+  }
   return (
     <Layout title="myAccount">
       <Flex
@@ -173,7 +146,7 @@ const MyAccountScreen = ({ userId, userToken }) => {
           </Center>
 
           <Box minW={{ base: '90%', md: '468px' }}>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Stack
                 spacing={4}
                 p="1rem"
@@ -323,6 +296,18 @@ export async function getServerSideProps(context) {
   const userId = context.req.cookies['userId']
   const userToken = context.req.cookies['userToken']
 
+  if (!userId) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login?redirect=/myAccount'
+      },
+      props: {
+        userId: null,
+        userToken: null
+      }
+    }
+  }
   return {
     props: {
       userId,
