@@ -3,7 +3,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import React, { useContext, useReducer } from 'react'
 import Dropzone from 'react-dropzone'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 import LayoutContext from '../../utils/Store'
 import styled from '@emotion/styled'
 
@@ -78,13 +78,13 @@ export default function UploadFile({ onUpload }) {
         })
         onUpload(acceptedFiles[0].name)
       } catch (err) {
-        dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) })
+        dispatch({ type: 'UPLOAD_FAIL', payload: err.message })
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
-        ctx.setUploadInfo('error', getError(err))
+        ctx.setUploadInfo('error', err.message)
       }
     } else {
       // enqueueSnackbar('متاسفانه در بارگذاری فایل مشکلی پیش آمده است!', {

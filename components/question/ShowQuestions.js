@@ -11,7 +11,7 @@ import React, {
   useReducer,
   useState
 } from 'react'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 
 import {
   Table,
@@ -98,7 +98,7 @@ export default function ShowQuestions() {
         }
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -120,7 +120,7 @@ export default function ShowQuestions() {
         }
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -142,7 +142,7 @@ export default function ShowQuestions() {
         setIsExpert(data)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })

@@ -28,7 +28,7 @@ import {
 } from '@chakra-ui/react'
 
 // import axios from 'axios'
-// import { getError } from '../../../utils/error'
+// import {  } from '../../../utils/error'
 import useSWR from 'swr'
 
 const QuestionByCat = ({ questions, catName, catId }) => {

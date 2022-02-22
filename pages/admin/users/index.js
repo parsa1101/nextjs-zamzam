@@ -47,7 +47,7 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 // import ShowUserInfoModal from '../../../components/admin/modal/ShowInfo/ShowUserInfo'
 const ShowUserInfoModal = dynamic(() =>
   import('../../../components/admin/modal/ShowInfo/ShowUserInfo')
@@ -380,7 +380,7 @@ function ExpandableTableComponent() {
         setLoading(false)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -448,7 +448,7 @@ function ExpandableTableComponent() {
       usersHandler(data)
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -475,7 +475,7 @@ function ExpandableTableComponent() {
       usersHandler(data)
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

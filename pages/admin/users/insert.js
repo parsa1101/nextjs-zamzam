@@ -22,7 +22,7 @@ import { MdAlternateEmail, MdPhoneIphone } from 'react-icons/md'
 
 import axios from 'axios'
 
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
 import { FaLock } from 'react-icons/fa'
 
@@ -69,7 +69,7 @@ function InsertUser() {
         console.log(roles)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -108,7 +108,7 @@ function InsertUser() {
       router.push('/admin/users')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

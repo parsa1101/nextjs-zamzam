@@ -3,9 +3,16 @@ import axios from 'axios'
 import { useForm } from 'react-hook-form'
 
 import Cookies from 'js-cookie'
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
-import { Button, FormLabel, Stack, Switch, useToast } from '@chakra-ui/react'
+import {
+  Button,
+  CircularProgress,
+  FormLabel,
+  Stack,
+  Switch,
+  useToast
+} from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import {
   FormErrorMessage,
@@ -30,14 +37,15 @@ export default function EducationInfo({
   educationCities
 }) {
   const [eduCities, setEduCities] = useState(educationCities)
+  const [eduCityLoading, setEduCityLoding] = useState(false)
 
   const [userEduData, setUserEduData] = useState({
     major: userEduInfo ? userEduInfo.major : '',
     universityName: userEduInfo ? userEduInfo.universityName : '',
-    provinceId: userEduInfo ? userEduInfo.provinceId : '',
-    cityId: userEduInfo ? userEduInfo.cityId : '',
+    provinceId: userEduInfo ? userEduInfo.provinceId : 'DEFAULT',
+    cityId: userEduInfo ? userEduInfo.cityId : 'DEFAULT',
     evidence: userEduInfo ? userEduInfo.evidence : '',
-    educationStatus: userEduInfo ? userEduInfo.educationStatus : ''
+    educationStatus: userEduInfo ? userEduInfo.educationStatus : true
   })
 
   const token = Cookies.get('userToken')
@@ -82,7 +90,7 @@ export default function EducationInfo({
       })
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -97,6 +105,7 @@ export default function EducationInfo({
   }
 
   const handleEduProvinceValue = async e => {
+    setEduCityLoding(true)
     setUserEduData(prev => ({
       ...prev,
       provinceId: e.target.value
@@ -111,6 +120,7 @@ export default function EducationInfo({
         isClosable: true
       })
     }
+    setEduCityLoding(false)
   }
 
   const handleEduCityValue = e => {
@@ -242,6 +252,15 @@ export default function EducationInfo({
               id="city"
               size="lg"
               onChange={handleEduCityValue}
+              icon={
+                eduCityLoading && (
+                  <CircularProgress
+                    isIndeterminate
+                    thickness="1px"
+                    color="green.300"
+                  />
+                )
+              }
             >
               <option value="DEFAULT" disabled>
                 لطفا شهرستان را انتخاب نمایید ...

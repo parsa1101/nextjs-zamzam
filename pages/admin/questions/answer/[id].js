@@ -28,7 +28,7 @@ import { CheckIcon, DeleteIcon } from '@chakra-ui/icons'
 
 import axios from 'axios'
 
-import { getError } from '../../../../utils/error'
+import {} from '../../../../utils/error'
 
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
@@ -119,7 +119,7 @@ function EditAnswerScreen({ answer }) {
       router.push('/admin/questions')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -141,7 +141,7 @@ function EditAnswerScreen({ answer }) {
       })
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

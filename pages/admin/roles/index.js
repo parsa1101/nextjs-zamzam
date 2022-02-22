@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useEffect, useReducer } from 'react'
 
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
 import Cookies from 'js-cookie'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
@@ -84,7 +84,7 @@ function AdminRoles() {
         })
         dispatch({ type: 'FETCH_SUCCESS', payload: data })
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: getError(err) })
+        dispatch({ type: 'FETCH_FAIL', payload: err.message })
       }
     }
     if (successDelete) {
@@ -114,7 +114,7 @@ function AdminRoles() {
     } catch (err) {
       dispatch({ type: 'DELETE_FAIL' })
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'success',
         isClosable: true
       })

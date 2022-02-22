@@ -4,7 +4,13 @@ import { useForm } from 'react-hook-form'
 
 import Cookies from 'js-cookie'
 
-import { Button, FormLabel, Stack, useToast } from '@chakra-ui/react'
+import {
+  Button,
+  CircularProgress,
+  FormLabel,
+  Stack,
+  useToast
+} from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import {
   FormErrorMessage,
@@ -23,12 +29,13 @@ export default function WorkInfo({
   const [workCities, setWorkCities] = useState(userWorkCities)
 
   const toast = useToast()
+  const [workCityLoading, setWorkCityLoding] = useState(false)
 
   const [userWorkData, setUserWorkData] = useState({
     work: userWorkInfo ? userWorkInfo.work : '',
     workName: userWorkInfo ? userWorkInfo.workName : '',
-    provinceId: userWorkInfo ? userWorkInfo.provinceId : '',
-    cityId: userWorkInfo ? userWorkInfo.cityId : ''
+    provinceId: userWorkInfo ? userWorkInfo.provinceId : 'DEFAULT',
+    cityId: userWorkInfo ? userWorkInfo.cityId : 'DEFAULT'
   })
 
   const token = Cookies.get('userToken')
@@ -74,6 +81,7 @@ export default function WorkInfo({
   }
 
   const handleWorkProvinceValue = async e => {
+    setWorkCityLoding(true)
     setUserWorkData(prev => ({
       ...prev,
       provinceId: e.target.value
@@ -88,6 +96,7 @@ export default function WorkInfo({
         isClosable: true
       })
     }
+    setWorkCityLoding(false)
   }
 
   const handleWorkCityValue = e => {
@@ -197,6 +206,15 @@ export default function WorkInfo({
               id="city"
               size="lg"
               onChange={handleWorkCityValue}
+              icon={
+                workCityLoading && (
+                  <CircularProgress
+                    isIndeterminate
+                    thickness="1px"
+                    color="green.300"
+                  />
+                )
+              }
             >
               <option value="DEFAULT" disabled>
                 لطفا شهرستان را انتخاب نمایید ...

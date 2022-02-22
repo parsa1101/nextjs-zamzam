@@ -30,7 +30,7 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useToast } from '@chakra-ui/react'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 
 Chart.register(
   ArcElement,
@@ -156,7 +156,7 @@ const QuestionsChart = ({ year, sumCountQuestionFunc }) => {
         sumCountQuestionFunc(data.sumCount)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })

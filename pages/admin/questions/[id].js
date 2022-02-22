@@ -26,7 +26,7 @@ import { CheckIcon } from '@chakra-ui/icons'
 
 import axios from 'axios'
 
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
@@ -93,7 +93,7 @@ function EditQuestionScreen({ question }) {
         setPic_path(question.pic_path)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -135,7 +135,7 @@ function EditQuestionScreen({ question }) {
       return router.push('/admin/questions')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

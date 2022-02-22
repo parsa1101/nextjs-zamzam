@@ -1,4 +1,3 @@
-import { getError } from '../utils/error'
 function Error({ statusCode }) {
   return (
     <p>
@@ -10,7 +9,7 @@ function Error({ statusCode }) {
 }
 
 Error.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? getError(err) : 404
+  const statusCode = res ? res.statusCode : err ? err.message : 404
   return { statusCode }
 }
 

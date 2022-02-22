@@ -27,7 +27,7 @@ handler.post(async (req, res) => {
     res.send({ message: 'addedSuccessfully' })
   } catch (err) {
     await db.disconnect()
-    res.status(401).send({ message: 'ثبت اطلاعات با مشکل مواجه شده است' })
+    res.status(401).send(err)
   }
 })
 

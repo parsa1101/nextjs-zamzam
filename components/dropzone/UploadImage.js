@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 
 import React, { useReducer } from 'react'
 import Dropzone from 'react-dropzone'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 import styled from '@emotion/styled'
 
 function reducer(state, action) {
@@ -75,9 +75,9 @@ export default function UploadImage({ onUpload }) {
         })
         onUpload(acceptedFiles[0].name)
       } catch (err) {
-        dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) })
+        dispatch({ type: 'UPLOAD_FAIL', payload: err.message })
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })

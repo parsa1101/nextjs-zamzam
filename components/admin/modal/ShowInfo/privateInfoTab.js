@@ -2,7 +2,7 @@ import { Box, Grid, GridItem, Text, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import React, { useEffect, useState } from 'react'
-import { getError } from '../../../../utils/error'
+import {} from '../../../../utils/error'
 
 export default function PrivateInfoTab({ id }) {
   const token = Cookies.get('userToken')
@@ -29,7 +29,7 @@ export default function PrivateInfoTab({ id }) {
         }
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -52,7 +52,7 @@ export default function PrivateInfoTab({ id }) {
         }
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -77,7 +77,7 @@ export default function PrivateInfoTab({ id }) {
         }
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })

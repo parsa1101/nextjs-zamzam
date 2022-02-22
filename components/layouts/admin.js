@@ -36,7 +36,7 @@ function AdminLayout({ children }) {
     //     setUser(data.user)
     //   } catch (err) {
     //     toast({
-    //       title: getError(err),
+    //       title: err.message,
     //       status: 'error',
     //       isClosable: true
     //     })

@@ -25,7 +25,7 @@ import { useForm } from 'react-hook-form'
 const UploadFile = dynamic(() => import('../dropzone/UploadFile'))
 import LayoutContext from '../../utils/Store'
 import axios from 'axios'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 
 export default function ShowModal({ id }) {
   const token = Cookies.get('userToken')
@@ -98,7 +98,7 @@ export default function ShowModal({ id }) {
       })
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

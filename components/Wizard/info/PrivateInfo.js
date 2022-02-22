@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 
 import {
   Button,
+  CircularProgress,
   FormLabel,
   Stack,
   Switch,
@@ -28,9 +29,12 @@ export default function PrivateInfo({
   profileCities
 }) {
   const [provinceValue, setProvinceValue] = useState(
-    userInfo ? userInfo.provinceId : ''
+    userInfo ? userInfo.provinceId : 'DEFAULT'
   )
-  const [cityValue, setCityValue] = useState(userInfo ? userInfo.cityId : '')
+  const [priCityLoading, setPriCityLoding] = useState(false)
+  const [cityValue, setCityValue] = useState(
+    userInfo ? userInfo.cityId : 'DEFAULT'
+  )
 
   const [cities, setCities] = useState(profileCities)
 
@@ -38,8 +42,8 @@ export default function PrivateInfo({
     nameFamily: userInfo ? userInfo.nameFamily : '',
     homePhone: userInfo ? userInfo.homePhone : '',
     homeAddress: userInfo ? userInfo.homeAddress : '',
-    male: userInfo ? userInfo.male : '',
-    married: userInfo ? userInfo.married : ''
+    male: userInfo ? userInfo.male : true,
+    married: userInfo ? userInfo.married : true
   })
 
   const toast = useToast()
@@ -90,6 +94,7 @@ export default function PrivateInfo({
   }
   const handleProvinceValue = async e => {
     setProvinceValue(e.target.value)
+    setPriCityLoding(true)
     try {
       const { data } = await axios.get(`/api/province/${e.target.value}`)
       setCities(data)
@@ -100,6 +105,7 @@ export default function PrivateInfo({
         isClosable: true
       })
     }
+    setPriCityLoding(false)
   }
   const handleCityValue = e => {
     setCityValue(e.target.value)
@@ -235,6 +241,15 @@ export default function PrivateInfo({
               id="city"
               size="lg"
               onChange={handleCityValue}
+              icon={
+                priCityLoading && (
+                  <CircularProgress
+                    isIndeterminate
+                    thickness="1px"
+                    color="green.300"
+                  />
+                )
+              }
             >
               <option value="DEFAULT" disabled>
                 لطفا شهرستان را انتخاب نمایید ...
@@ -246,6 +261,7 @@ export default function PrivateInfo({
                 </option>
               ))}
             </Select>
+
             <Stack spacing={10} align="center" direction="row">
               <Stack align="center" direction="row">
                 <FormLabel>متاهل؟</FormLabel>

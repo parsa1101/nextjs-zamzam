@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
 import Cookies from 'js-cookie'
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
 import {
   Box,
@@ -118,10 +118,10 @@ function EditRole({ role }) {
       setRoleId(data._id)
       dispatch({ type: 'FETCH_SUCCESS' })
     } catch (err) {
-      dispatch({ type: 'FETCH_FAIL', payload: getError(err) })
+      dispatch({ type: 'FETCH_FAIL', payload: err.message })
 
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -151,9 +151,9 @@ function EditRole({ role }) {
       setRoleId(data._id)
       dispatch({ type: 'DELETE_SUCCESS' })
     } catch (err) {
-      dispatch({ type: 'DELETE_FAIL', payload: getError(err) })
+      dispatch({ type: 'DELETE_FAIL', payload: err.message })
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

@@ -9,7 +9,7 @@ const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
 import styled from '@emotion/styled'
 
 import Cookies from 'js-cookie'
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 import {
   Button,
   Center,
@@ -64,7 +64,7 @@ function InsertCategory() {
         setCategories(data)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -95,7 +95,7 @@ function InsertCategory() {
       return router.push('/admin/category')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

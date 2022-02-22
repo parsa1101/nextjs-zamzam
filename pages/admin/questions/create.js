@@ -26,7 +26,7 @@ import { CheckIcon, AddIcon } from '@chakra-ui/icons'
 
 import axios from 'axios'
 
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
@@ -78,7 +78,7 @@ function CreatequestionScreen() {
         setCategories(data)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -123,7 +123,7 @@ function CreatequestionScreen() {
       }
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

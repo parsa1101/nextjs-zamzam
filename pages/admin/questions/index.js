@@ -20,7 +20,7 @@ import moment from 'jalali-moment'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { getError } from '../../../utils/error'
+import {} from '../../../utils/error'
 
 const AdminQuestions = dynamic(() =>
   import('../../../components/admin/questions/AdminQuestions')
@@ -58,7 +58,7 @@ function ExpandableQuestionTable() {
       questionsHandler(data)
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -154,7 +154,7 @@ function ExpandableQuestionTable() {
         setLoading(false)
 
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })
@@ -252,7 +252,7 @@ function ExpandableQuestionTable() {
       questionsHandler(data)
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })

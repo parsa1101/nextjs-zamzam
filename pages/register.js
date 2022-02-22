@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 
-// import Layout from '../components/layouts/article'
 const Layout = dynamic(() => import('../components/layouts/article'))
 import {
   Flex,
@@ -30,7 +29,6 @@ import { MdAlternateEmail, MdPhoneIphone } from 'react-icons/md'
 import axios from 'axios'
 
 import LayoutContext from '../utils/Store'
-import { getError } from '../utils/error'
 import Cookies from 'js-cookie'
 
 const CFaLock = chakra(FaLock)
@@ -90,7 +88,7 @@ const RegisterScreen = () => {
       router.push(redirect || '/')
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
@@ -273,5 +271,20 @@ const RegisterScreen = () => {
     </Layout>
   )
 }
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
 
+  if (userId) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {}
+  }
+}
 export default RegisterScreen

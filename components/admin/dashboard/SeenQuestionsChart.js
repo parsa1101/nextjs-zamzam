@@ -16,7 +16,6 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { FaChevronUp } from 'react-icons/fa'
-import { getError } from '../../../utils/error'
 import { Line } from 'react-chartjs-2'
 import {
   Chart,
@@ -171,7 +170,7 @@ const SeenQuestionsChart = () => {
         SetSumSeen(data.sumCount)
       } catch (err) {
         toast({
-          title: getError(err),
+          title: err.message,
           status: 'error',
           isClosable: true
         })

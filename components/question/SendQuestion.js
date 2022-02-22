@@ -13,7 +13,7 @@ import React, { useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import { getError } from '../../utils/error'
+import {} from '../../utils/error'
 import Cookies from 'js-cookie'
 
 export default function SendQuestion({ onClicked, id, catId }) {
@@ -44,7 +44,7 @@ export default function SendQuestion({ onClicked, id, catId }) {
       })
     } catch (err) {
       toast({
-        title: getError(err),
+        title: err.message,
         status: 'error',
         isClosable: true
       })
