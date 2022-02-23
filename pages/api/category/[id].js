@@ -12,6 +12,7 @@ handler.get(async (req, res) => {
   await db.connect()
   const { id } = req.query
   const subCats = await Category.find({ parrent_id: id })
+
   const cats = []
 
   for (var i = 0, len = subCats.length; i < len; i++) {

@@ -18,6 +18,8 @@ const Section = dynamic(() => import('../components/section'))
 import db from '../utils/db'
 import Question from '../models/question'
 import Category from '../models/category'
+import User from '../models/user'
+import Role from '../models/role'
 
 import {
   AppContainer,
@@ -28,8 +30,9 @@ import Cookies from 'js-cookie'
 
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
 const Paragraph = dynamic(() => import('../components/paragraph'))
-const Home = ({ questions, categories }) => {
+const Home = ({ questions, categories, isExpert }) => {
   Cookies.set('menuItems', JSON.stringify(categories))
+  Cookies.set('isExpert', isExpert)
   return (
     <Layout>
       <Container>
@@ -123,8 +126,21 @@ const Home = ({ questions, categories }) => {
 }
 export default Home
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+
   await db.connect()
+  let isExpert = false
+  let role = null
+  if (userId) {
+    const user = await User.findById(userId)
+    for (let i = 0, len = user.roles.length; i < len; i++) {
+      role = await Role.findById(user.roles[i]).lean()
+      if (role.name === 'expert') {
+        isExpert = true
+      }
+    }
+  }
   const questions = await Question.find({ status: true })
     .sort({ createdAt: -1 })
     .lean()
@@ -136,7 +152,8 @@ export async function getServerSideProps() {
   return {
     props: {
       questions: questions.map(db.convertDocToObj),
-      categories: categories.map(db.convertCategoryToObj)
+      categories: categories.map(db.convertCategoryToObj),
+      isExpert
     }
   }
 }

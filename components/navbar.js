@@ -39,6 +39,7 @@ import { useRouter } from 'next/router'
 
 const GroupDrawer = ({ toggle, isOpen }) => {
   const menuItems = JSON.parse(Cookies.get('menuItems'))
+
   return (
     <Drawer placement="right" onClose={toggle} isOpen={isOpen}>
       <DrawerOverlay />
@@ -90,6 +91,7 @@ const Navbar = props => {
 
   const userId = Cookies.get('userId')
   const token = Cookies.get('userToken')
+  const isExpert = Cookies.get('isExpert')
 
   const [showDrawer1, setShowDrawer1] = useState(false)
   const [showDrawer2, setShowDrawer2] = useState(false)
@@ -193,6 +195,19 @@ const Navbar = props => {
                   >
                     ویرایش اطلاعات کاربری
                   </LinkItem>
+                  {isExpert && (
+                    <LinkItem
+                      _target="_blank"
+                      href="/expert/showCategory"
+                      display="inline-flex"
+                      alignItems="center"
+                      style={{ gap: 4 }}
+                      pl={2}
+                      path={path}
+                    >
+                      پاسخگویی به سوالات
+                    </LinkItem>
+                  )}
                 </MenuItem>
               </MenuList>
             </Menu>
@@ -229,7 +244,7 @@ const Navbar = props => {
                   <GroupDrawer toggle={toggleDrawer2} isOpen={showDrawer2} />
                 )}
 
-                {userId && <SubMenu />}
+                {userId && <SubMenu isExpert={isExpert} />}
                 {userId && (
                   <Button variant="ghost" onClick={logoutHandler}>
                     خروج
@@ -244,7 +259,7 @@ const Navbar = props => {
     </Box>
   )
 }
-const SubMenu = () => {
+const SubMenu = ({ isExpert }) => {
   return (
     <Accordion allowToggle>
       <AccordionItem>
@@ -278,6 +293,18 @@ const SubMenu = () => {
           >
             ثبت اطلاعات به عنوان کارشناس
           </LinkItem>
+          {isExpert && (
+            <LinkItem
+              _target="_blank"
+              href="/expert/showCategory"
+              display="inline-flex"
+              alignItems="center"
+              style={{ gap: 4 }}
+              pl={2}
+            >
+              پاسخگویی به سوالات
+            </LinkItem>
+          )}
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
