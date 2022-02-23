@@ -4,7 +4,6 @@ import Cookies from 'js-cookie'
 
 import React, { useReducer } from 'react'
 import Dropzone from 'react-dropzone'
-import {} from '../../utils/error'
 import styled from '@emotion/styled'
 
 function reducer(state, action) {

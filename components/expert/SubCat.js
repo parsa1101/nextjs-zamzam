@@ -7,16 +7,14 @@ import {
   AccordionIcon,
   Box,
   useToast,
-  Button
+  Link
 } from '@chakra-ui/react'
 import useSWR from 'swr'
-import { useRouter } from 'next/router'
+// import axios from 'axios'
 
 export default function SubCat({ catName, catId }) {
   const fetcher = (...args) => fetch(...args).then(res => res.json())
   const toast = useToast()
-
-  const router = useRouter()
 
   const res = useSWR(`/api/category/${catId}`, fetcher, {
     onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
@@ -24,7 +22,7 @@ export default function SubCat({ catName, catId }) {
       if (error) {
         toast({
           title: 'خطا',
-          description: 'متاسفانه در بازیابی اطلاعات مشکلی به وجود آمده است.',
+          description: error.message,
           status: 'error',
           duration: 9000
         })
@@ -33,7 +31,6 @@ export default function SubCat({ catName, catId }) {
       if (retryCount >= 10) return
 
       // Retry after 5 seconds.
-      setTimeout(() => revalidate({ retryCount }), 5000)
     }
   })
 
@@ -43,15 +40,15 @@ export default function SubCat({ catName, catId }) {
       <AccordionItem>
         <h2>
           <AccordionButton>
-            <Box flex="1" textAlign="left">
-              <Button
-                variant="ghost"
-                colorScheme="teal"
+            <Box flex="1" textAlign="left" role="button">
+              <Link
+                color="teal.500"
                 size="md"
-                onClick={() => router.push(`/expert/showQuestions/${catId}`)}
+                href={`/expert/showQuestions/${catId}`}
+                isExternal
               >
                 {catName}
-              </Button>
+              </Link>
             </Box>
             <AccordionIcon />
           </AccordionButton>

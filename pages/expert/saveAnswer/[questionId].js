@@ -183,22 +183,17 @@ export default function SaveAnswerScreen({ token, userId, question }) {
                   </FormErrorMessage>
                 </FormControl>
                 {/* UploadFile */}
-                <Box
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  mb={10}
-                  textAlign="center"
-                  bg={'#d8e2dc'}
+                <Text
+                  mt={6}
+                  mr={1}
+                  color="#457b9d"
+                  fontSize={{ base: '10px', md: '10px', lg: '15px' }}
                 >
-                  <Text mt={6} mr={1} color="#457b9d">
-                    اگر جواب به صورت صوتی و یا تصویری است لطفا آن را بارگذاری
-                    نمایید!
-                  </Text>
+                  اگر جواب به صورت صوتی و یا تصویری است لطفا آن را بارگذاری
+                  نمایید!
+                </Text>
 
-                  <Center mt={5}>
-                    <UploadFile onUpload={uploadHandler} />
-                  </Center>
-                </Box>
+                <UploadFile onUpload={uploadHandler} />
 
                 {mediaName && (
                   <FormControl isInvalid={errors.mediaName} isReadOnly>

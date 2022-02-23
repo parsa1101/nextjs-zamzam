@@ -10,7 +10,6 @@ import {
   Container,
   Box,
   useColorModeValue,
-  Button,
   Flex,
   Center,
   Image,
@@ -18,14 +17,16 @@ import {
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  AccordionIcon
+  AccordionIcon,
+  Link,
+  Icon,
+  Text
 } from '@chakra-ui/react'
 
 import db from '../../../utils/db'
 import TemporaryQuestion from '../../../models/temporaryQuestion'
 import Category from '../../../models/category'
 
-import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 
@@ -33,7 +34,6 @@ const Layout = dynamic(() => import('../../../components/layouts/article'))
 const Section = dynamic(() => import('../../../components/section'))
 
 export default function ShowQuestions({ tempQuestions, category }) {
-  const router = useRouter()
   return (
     <Layout title="show-categories">
       <Container>
@@ -56,7 +56,7 @@ export default function ShowQuestions({ tempQuestions, category }) {
             <Center my={6}>
               <Image src="/images/works/amembo_icon.png" alt="icon" />
             </Center>
-            <Table variant="simple">
+            <Table variant="simple" overflow="auto">
               <Thead>
                 <Tr>
                   <Th>شماره</Th>
@@ -73,25 +73,29 @@ export default function ShowQuestions({ tempQuestions, category }) {
                           <h2>
                             <AccordionButton>
                               <Box flex="1" textAlign="left">
-                                {question.full_text}
+                                <Text
+                                  fontSize={{
+                                    base: '10px',
+                                    md: '10px',
+                                    lg: '15px'
+                                  }}
+                                >
+                                  {question.full_text}
+                                </Text>
                               </Box>
                               <AccordionIcon />
                             </AccordionButton>
                           </h2>
                           <AccordionPanel pb={4} bg={'#edede9'}>
                             <Box flex="1" textAlign="center">
-                              <Button
-                                leftIcon={<ArrowForwardIcon />}
-                                bg="#8e9aaf"
-                                variant="solid"
-                                onClick={() =>
-                                  router.push(
-                                    `/expert/saveAnswer/${question._id}`
-                                  )
-                                }
+                              <Link
+                                color="teal.500"
+                                isExternal
+                                href={`/expert/saveAnswer/${question._id}`}
                               >
+                                <Icon as={ArrowForwardIcon} />
                                 پاسخگویی به سوال
-                              </Button>
+                              </Link>
                             </Box>
                           </AccordionPanel>
                         </AccordionItem>

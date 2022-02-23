@@ -1,11 +1,8 @@
 import { Spinner, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import React, { useContext, useReducer } from 'react'
+import React, { useReducer } from 'react'
 import Dropzone from 'react-dropzone'
-import {} from '../../utils/error'
-import LayoutContext from '../../utils/Store'
-import styled from '@emotion/styled'
 
 function reducer(state, action) {
   switch (action.type) {
@@ -26,21 +23,6 @@ function reducer(state, action) {
 }
 
 export default function UploadFile({ onUpload }) {
-  const DropZoneBox = styled.div`
-  background: '#eee',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '100px',
-    padding: '10px',
-    cursor: 'pointer',
-    height: '150px',
-    width: '400px',
-    border: '2px dashed cyan',
-    outline: 'none',
-    margin: 'auto',
-`
-
   const toast = useToast()
 
   const [{ loadingUpload }, dispatch] = useReducer(reducer, {
@@ -52,8 +34,6 @@ export default function UploadFile({ onUpload }) {
 
   const maxSize = 5000000
 
-  const ctx = useContext(LayoutContext)
-
   const onDrop = async acceptedFiles => {
     const bodyFormData = new FormData()
 
@@ -62,13 +42,13 @@ export default function UploadFile({ onUpload }) {
 
       try {
         dispatch({ type: 'UPLOAD_REQUEST' })
-        const { data } = await axios.post('/api/upload/media', bodyFormData, {
+        await axios.post('/api/upload/media', bodyFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             authorization: `Bearer ${token}`
           }
         })
-        ctx.setUploadInfo('success', data)
+
         dispatch({ type: 'UPLOAD_SUCCESS' })
 
         toast({
@@ -84,16 +64,8 @@ export default function UploadFile({ onUpload }) {
           status: 'error',
           isClosable: true
         })
-        ctx.setUploadInfo('error', err.message)
       }
     } else {
-      // enqueueSnackbar('متاسفانه در بارگذاری فایل مشکلی پیش آمده است!', {
-      //   variant: 'error'
-      // })
-      ctx.setUploadInfo(
-        'error',
-        'متاسفانه در بارگذاری فایل مشکلی پیش آمده است!'
-      )
       dispatch({
         type: 'UPLOAD_FAIL',
         payload: 'متاسفانه در بارگذاری فایل مشکلی پیش آمده است!'
@@ -107,15 +79,12 @@ export default function UploadFile({ onUpload }) {
   }
 
   return (
-    <DropZoneBox>
+    <div className="dropzone">
       <Dropzone
         onDrop={onDrop}
         accept="audio/mpeg,video/mp4,video/mpeg"
         minSize={0}
         maxSize={maxSize}
-        styles={{
-          dropzoneReject: { borderColor: 'red', backgroundColor: '#DAA' }
-        }}
       >
         {({
           getRootProps,
@@ -133,7 +102,7 @@ export default function UploadFile({ onUpload }) {
           return (
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              {!isDragActive && 'برای بارگذاری فایل در این قسمت کلیک کنید !'}
+              {!isDragActive && 'برای بارگذاری فایل در این قسمت کلیک نمایید !'}
               {isDragActive && !isDragReject && 'فایل را در این قسمت رها کنید'}
               {isDragReject && 'متاسفم فرمت فایل پذیرفته نمی شود !'}
               {isFileTooLarge && (
@@ -144,6 +113,6 @@ export default function UploadFile({ onUpload }) {
         }}
       </Dropzone>
       {loadingUpload && <Spinner />}
-    </DropZoneBox>
+    </div>
   )
 }

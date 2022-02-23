@@ -195,7 +195,10 @@ const Navbar = props => {
                   >
                     ویرایش اطلاعات کاربری
                   </LinkItem>
-                  {isExpert && (
+                </MenuItem>
+
+                {isExpert && (
+                  <MenuItem>
                     <LinkItem
                       _target="_blank"
                       href="/expert/showCategory"
@@ -207,8 +210,8 @@ const Navbar = props => {
                     >
                       پاسخگویی به سوالات
                     </LinkItem>
-                  )}
-                </MenuItem>
+                  </MenuItem>
+                )}
               </MenuList>
             </Menu>
           )}
@@ -293,6 +296,7 @@ const SubMenu = ({ isExpert }) => {
           >
             ثبت اطلاعات به عنوان کارشناس
           </LinkItem>
+          <hr />
           {isExpert && (
             <LinkItem
               _target="_blank"

@@ -3,8 +3,6 @@ import { onError } from '../../../utils/error'
 import { isAuth } from '../../../utils/auth'
 import multer from 'multer'
 
-// import streamifier from 'streamifier';
-
 export const config = {
   api: {
     bodyParser: false

@@ -46,7 +46,7 @@ export default function ShowQuestions({ categories, token }) {
             <Center my={6}>
               <Image src="/images/works/amembo_icon.png" alt="icon" />
             </Center>
-            <Table variant="simple">
+            <Table variant="simple" overflow="auto">
               <Thead>
                 <Tr>
                   <Th>شماره</Th>
