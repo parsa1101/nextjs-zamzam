@@ -6,15 +6,13 @@ import {
   useColorModeValue,
   Flex,
   Icon,
-  useToast,
   Box,
   Heading,
   Select
 } from '@chakra-ui/react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+
+import { useState } from 'react'
 import { FaChevronUp } from 'react-icons/fa'
 import { Line } from 'react-chartjs-2'
 import {
@@ -43,6 +41,7 @@ import {
   Title,
   Tooltip
 } from 'chart.js'
+import useSWR from 'swr'
 
 Chart.register(
   ArcElement,
@@ -91,20 +90,14 @@ const options = {
     }
   }
 }
-const SeenQuestionsChart = () => {
-  const token = Cookies.get('userToken')
-
-  const userId = Cookies.get('userId')
-
+const SeenQuestionsChart = ({ token }) => {
   const bgColor = useColorModeValue('gray.50', 'whiteAlpha.50')
 
   const [sumSeen, SetSumSeen] = useState(0)
 
   const [year, setYear] = useState('1400')
 
-  const router = useRouter()
-
-  const toast = useToast()
+  // const toast = useToast()
 
   const [datas, setData] = useState({
     labels: [
@@ -144,40 +137,51 @@ const SeenQuestionsChart = () => {
       }
     ]
   })
-  /* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    if (userId === undefined) {
-      return router.push('/login')
-    }
-
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get(`/api/admin/question/chart/${year}`, {
-          headers: { authorization: `Bearer ${token}` }
-        })
-
+  const SeenFetcher = async (url, token) => {
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        console.log('resSeen:')
         const datasets = [...datas.datasets]
-
         const data2 = []
-
-        data.chartInfo.map(info => data2.push(info.count))
+        res.data.chartInfo.map(info => data2.push(info.count))
 
         datasets[0].data = data2
 
         setData(prev => ({ ...prev, datasets: datasets }))
 
-        SetSumSeen(data.sumCount)
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    fetchData()
-  }, [year])
+        SetSumSeen(res.data.sumCount)
+      })
+    // .catch(function (error) {
+    //   if (error.response) {
+    //     console.log(error.response.data)
+    //     console.log(error.response.status)
+    //     console.log(error.response.headers)
+    //   } else if (error.request) {
+    //     console.log(error.request)
+    //   } else {
+    //     // Something happened in setting up the request that triggered an Error
+    //     console.log('Error', error.message)
+    //   }
+    //   console.log(error.config)
+    // })
+  }
+  useSWR([`/api/admin/question/chart/${year}`, token], SeenFetcher, {
+    // onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+    //   if (error) {
+    //     toast({
+    //       title: 'خطا',
+    //       description: error.message,
+    //       status: 'error',
+    //       duration: 9000
+    //     })
+    //   }
+    //   if (retryCount >= 10) return
+    //   // Retry after 5 seconds.
+    //   setTimeout(() => revalidate({ retryCount }), 5000)
+    // }
+  })
 
   function changeYearHandler(value) {
     setYear(value)

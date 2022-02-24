@@ -3,24 +3,25 @@ import dynamic from 'next/dynamic'
 
 import { Flex, Container } from '@chakra-ui/react'
 
-// import AdminLayout from '../../components/layouts/admin'
+import db from '../../utils/db'
+import User from '../../models/user'
+
 const AdminLayout = dynamic(() => import('../../components/layouts/admin'))
-// import PageContent from '../../components/admin/dashboard/PageContent'
 const PageContent = dynamic(() =>
   import('../../components/admin/dashboard/PageContent')
 )
 
-// import ShowQuestionsChart from '../../components/admin/dashboard/ShowQuestionsChart'
 const ShowQuestionsChart = dynamic(() =>
   import('../../components/admin/dashboard/ShowQuestionsChart')
 )
 
-// import SeenQuestionsChart from '../../components/admin/dashboard/SeenQuestionsChart'
 const SeenQuestionsChart = dynamic(() =>
   import('../../components/admin/dashboard/SeenQuestionsChart')
 )
 
-export default function Dashboard() {
+// import ShowQuestionsChart from '../../components/admin/dashboard/ShowQuestionsChart'
+// import SeenQuestionsChart from '../../components/admin/dashboard/SeenQuestionsChart'
+export default function Dashboard({ token }) {
   return (
     <AdminLayout>
       <PageContent>
@@ -30,11 +31,37 @@ export default function Dashboard() {
             py={[0, 10, 20]}
             direction={{ base: 'column-reverse', md: 'row' }}
           >
-            <SeenQuestionsChart />
-            <ShowQuestionsChart />
+            <SeenQuestionsChart token={token} />
+            <ShowQuestionsChart token={token} />
           </Flex>
         </Container>
       </PageContent>
     </AdminLayout>
   )
+}
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+  const token = context.req.cookies['userToken']
+
+  await db.connect()
+
+  const user = await User.findById(userId).lean()
+
+  await db.disconnect()
+
+  if (!userId && !user.isAdmin) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/401'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {
+      userId,
+      token
+    }
+  }
 }

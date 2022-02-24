@@ -64,6 +64,14 @@ export default function ShowQuestions({ tempQuestions, category }) {
                 </Tr>
               </Thead>
               <Tbody>
+                {tempQuestions.length === 0 && (
+                  <Tr>
+                    <Td>0</Td>
+                    <Td>
+                      <Text>متاسفانه سوالی مطرح نشده است</Text>
+                    </Td>
+                  </Tr>
+                )}
                 {tempQuestions.map((question, index) => (
                   <Tr key={index}>
                     <Td>{index + 1}</Td>

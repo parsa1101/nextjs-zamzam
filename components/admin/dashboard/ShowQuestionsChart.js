@@ -6,15 +6,13 @@ import {
   useColorModeValue,
   Flex,
   Icon,
-  useToast,
   Box,
   Heading,
   Select
 } from '@chakra-ui/react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+
+import { useState } from 'react'
 import { FaChevronUp } from 'react-icons/fa'
 import { Line } from 'react-chartjs-2'
 import {
@@ -43,6 +41,7 @@ import {
   Title,
   Tooltip
 } from 'chart.js'
+import useSWR from 'swr'
 
 Chart.register(
   ArcElement,
@@ -91,22 +90,16 @@ const options = {
     }
   }
 }
-const ShowQuestionsChart = () => {
-  const token = Cookies.get('userToken')
-
-  const userId = Cookies.get('userId')
-
+const ShowQuestionsChart = ({ token }) => {
   const bgColor = useColorModeValue('gray.50', 'whiteAlpha.50')
 
-  const [sumSeen, SetSumSeen] = useState(0)
+  const [countQuestion, SetcountQuestion] = useState(0)
 
-  const [year, setYear] = useState('1400')
+  const [yearQuestion, setyearQuestion] = useState('1400')
 
-  const router = useRouter()
+  // const toast = useToast()
 
-  const toast = useToast()
-
-  const [datas, setData] = useState({
+  const [datas2, setData2] = useState({
     labels: [
       'فروردین',
       'اردیبهشت',
@@ -144,46 +137,59 @@ const ShowQuestionsChart = () => {
       }
     ]
   })
-  /* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    if (userId === undefined) {
-      return router.push('/login')
-    }
-
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get(
-          `/api/admin/question/chart/countQuestions/${year}`,
-          {
-            headers: { authorization: `Bearer ${token}` }
-          }
-        )
-
-        const datasets = [...datas.datasets]
+  const fetcher2 = async (url, token) => {
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        const datasets = [...datas2.datasets]
 
         const data2 = []
 
-        data.chartInfo.map(info => data2.push(info.count))
+        res.data.chartInfo.map(info => data2.push(info.count))
 
         datasets[0].data = data2
 
-        setData(prev => ({ ...prev, datasets: datasets }))
+        setData2(prev => ({ ...prev, datasets: datasets }))
 
-        SetSumSeen(data.sumCount)
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
+        SetcountQuestion(res.data.sumCount)
+      })
+    // .catch(function (error) {
+    //   if (error.response) {
+    //     console.log(error.response.data)
+    //     console.log(error.response.status)
+    //     console.log(error.response.headers)
+    //   } else if (error.request) {
+    //     console.log(error.request)
+    //   } else {
+    //     // Something happened in setting up the request that triggered an Error
+    //     console.log('Error', error.message)
+    //   }
+    //   console.log(error.config)
+    // })
+  }
+  useSWR(
+    [`/api/admin/question/chart/countQuestions/${yearQuestion}`, token],
+    fetcher2,
+    {
+      // onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      //   if (error) {
+      //     toast({
+      //       title: 'خطا',
+      //       description: 'متاسفانه در بازیابی اطلاعات مشکلی به وجود آمده است.',
+      //       status: 'error',
+      //       duration: 9000
+      //     })
+      //   }
+      //   if (retryCount >= 10) return
+      //   // Retry after 5 seconds.
+      //   setTimeout(() => revalidate({ retryCount }), 5000)
+      // }
     }
-    fetchData()
-  }, [year])
+  )
 
   function changeYearHandler(value) {
-    setYear(value)
+    setyearQuestion(value)
   }
 
   return (
@@ -207,7 +213,7 @@ const ShowQuestionsChart = () => {
                 variant="outline"
                 onChange={e => changeYearHandler(e.target.value)}
                 size="sm"
-                value={year}
+                value={yearQuestion}
               >
                 <option value="1400">1400</option>
                 <option value="1401">1401</option>
@@ -219,7 +225,7 @@ const ShowQuestionsChart = () => {
             {' '}
             <Flex alignItems="center" justifyContent="space-between">
               <Text fontSize="2em" lineHeight="4rem" fontWeight="500">
-                {sumSeen}
+                {countQuestion}
               </Text>
               <Stack alignItems="center">
                 <Icon as={FaChevronUp} color="gray.100" fontSize="2em" />
@@ -234,7 +240,7 @@ const ShowQuestionsChart = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Line data={datas} options={options} />
+          <Line data={datas2} options={options} />
         </Stack>
       </HStack>
     </VStack>
