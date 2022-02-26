@@ -1,12 +1,10 @@
-import { Box, Grid, GridItem, Text, useToast } from '@chakra-ui/react'
+import { Box, Grid, GridItem, Text } from '@chakra-ui/react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 
-export default function EducationInfoTab({ id }) {
-  const token = Cookies.get('userToken')
-
-  const toast = useToast()
+export default function EducationInfoTab({ id, token }) {
+  // const toast = useToast()
 
   const [userEduData, setUserEduData] = useState(null)
 
@@ -22,80 +20,41 @@ export default function EducationInfoTab({ id }) {
     { name: 'کارشناسی ارشد', value: '4' },
     { name: 'دکتری', value: '5' }
   ]
-  /* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    async function getProvince() {
-      try {
-        const { data } = await axios.get(
-          `/api/province/findById/${provinceEdu.id}`
-        )
+  const fetcheUserEduInfo = async (url, token) => {
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        setUserEduData(res.data)
+        setProvinceEdu(prev => ({ ...prev, id: res.data.provinceId }))
+        setCityEdu(prev => ({ ...prev, id: res.data.cityId }))
+      })
+  }
+  useSWR(
+    !userEduData ? [`/api/profile/educationInfo/getInfo/${id}`, token] : null,
+    fetcheUserEduInfo
+  )
 
-        if (data) {
-          setProvinceEdu(prev => ({ ...prev, name: data.province }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    if (provinceEdu.id) {
-      getProvince()
-    }
-  }, [provinceEdu.id])
+  const fetcheProvince = async url => {
+    await axios.get(url).then(res => {
+      setProvinceEdu(prev => ({ ...prev, name: res.data.province }))
+    })
+  }
+  useSWR(
+    provinceEdu.id ? [`/api/province/findById/${provinceEdu.id}`] : null,
+    fetcheProvince
+  )
 
-  useEffect(() => {
-    async function getCity() {
-      try {
-        const { data } = await axios.get(
-          `/api/province/findById/city/${cityEdu.id}`
-        )
+  const fetcheCity = async url => {
+    await axios.get(url).then(res => {
+      setCityEdu(prev => ({ ...prev, name: res.data.city }))
+    })
+  }
+  useSWR(
+    cityEdu.id ? [`/api/province/findById/city/${cityEdu.id}`] : null,
+    fetcheCity
+  )
 
-        if (data) {
-          setCityEdu(prev => ({ ...prev, name: data.city }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    if (cityEdu.id) {
-      getCity()
-    }
-  }, [cityEdu.id])
-
-  useEffect(() => {
-    async function getUserInfo() {
-      try {
-        const { data } = await axios.get(
-          `/api/profile/educationInfo/getInfo/${id}`,
-          {
-            headers: { authorization: `Bearer ${token}` }
-          }
-        )
-
-        if (data) {
-          setUserEduData(data)
-          setProvinceEdu(prev => ({ ...prev, id: data.provinceId }))
-          setCityEdu(prev => ({ ...prev, id: data.cityId }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-
-    getUserInfo()
-  }, [])
   return (
     <Box borderWidth="1px" borderRadius="lg" overflow="auto">
       {userEduData && (

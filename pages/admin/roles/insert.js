@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 import styled from '@emotion/styled'
 
 import Cookies from 'js-cookie'
-import {} from '../../../utils/error'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
 import {
   Box,

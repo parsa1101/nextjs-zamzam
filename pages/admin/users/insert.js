@@ -22,8 +22,6 @@ import { MdAlternateEmail, MdPhoneIphone } from 'react-icons/md'
 
 import axios from 'axios'
 
-import {} from '../../../utils/error'
-
 import { FaLock } from 'react-icons/fa'
 
 import Cookies from 'js-cookie'

@@ -16,7 +16,7 @@ handler.get(async (req, res) => {
     res.send(count)
   } catch (err) {
     await db.disconnect()
-    res.status(401).send({ message: err.message })
+    res.status(401).send({ message: 'اطلاعات شخصی یافت ثبت نشده!' })
   }
 })
 

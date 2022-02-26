@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -8,31 +8,29 @@ import {
   Container,
   Flex,
   Spinner,
-  useToast
+  useToast,
+  Center
 } from '@chakra-ui/react'
 import { FiTrello, FiThumbsUp, FiThumbsDown } from 'react-icons/fi'
 
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai'
-// import AdminLayout from '../../../../components/layouts/admin'
+
 const AdminLayout = dynamic(() =>
   import('../../../../components/layouts/admin')
 )
 import moment from 'jalali-moment'
 
-import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import {} from '../../../../utils/error'
+import db from '../../../../utils/db'
+import User from '../../../../models/user'
+import useSWR from 'swr'
 
 const AdminQuestions = dynamic(() =>
   import('../../../../components/admin/questions/AdminQuestions')
 )
-function ExpandableQuestionTable() {
+export default function ExpandableQuestionTable({ token }) {
   const router = useRouter()
-
-  const userId = Cookies.get('userId')
-
-  const token = Cookies.get('userToken')
 
   const toast = useToast()
 
@@ -67,19 +65,12 @@ function ExpandableQuestionTable() {
     }
   }
 
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  useEffect(() => {
-    if (!userId) {
-      router.push('/login')
-    }
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const { data } = await axios.get(`/api/admin/question/temporary`, {
-          headers: { authorization: `Bearer ${token}` }
-        })
-        data.map((item, i) =>
+  const fetcher = async (url, token) => {
+    setLoading(true)
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        res.data.map((item, i) =>
           setQuestions(prev => [
             ...prev,
             {
@@ -155,20 +146,28 @@ function ExpandableQuestionTable() {
             }
           ])
         )
-
-        setLoading(false)
-      } catch (err) {
-        setLoading(false)
-
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
+      })
+    setLoading(false)
+  }
+  useSWR(
+    !questions ? [`/api/admin/question/temporary`, token] : null,
+    fetcher,
+    {
+      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+        if (error) {
+          toast({
+            title: 'خطا',
+            description: error.message,
+            status: 'error',
+            duration: 9000
+          })
+        }
+        if (retryCount >= 10) return
+        // Retry after 5 seconds.
+        setTimeout(() => revalidate({ retryCount }), 5000)
       }
     }
-    fetchData()
-  }, [userId])
+  )
 
   function questionsHandler(data) {
     setQuestions([])
@@ -344,13 +343,12 @@ function ExpandableQuestionTable() {
             overflow="hidden"
             bg="white"
           >
+            <Center mt={10}>{loading && <Spinner color="green" />}</Center>
             <Flex
               h={{ base: 'auto', md: '100vh' }}
               py={[0, 10, 20]}
               direction={{ base: 'column', md: 'row' }}
             >
-              {loading && <Spinner />}
-
               <AdminQuestions columns={columns} data={questions} />
             </Flex>
           </Box>
@@ -360,6 +358,33 @@ function ExpandableQuestionTable() {
   )
 }
 
-export default dynamic(() => Promise.resolve(ExpandableQuestionTable), {
-  ssr: false
-})
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+
+  const token = context.req.cookies['userToken']
+
+  await db.connect()
+
+  const user = await User.findById(userId).lean()
+
+  await db.disconnect()
+
+  if (!userId || !user.isAdmin) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/401'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {
+      token
+    }
+  }
+}
+
+// export default dynamic(() => Promise.resolve(ExpandableQuestionTable), {
+//   ssr: false
+// })

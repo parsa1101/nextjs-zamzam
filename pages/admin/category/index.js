@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
-import {} from '../../../utils/error'
 import Cookies from 'js-cookie'
 import {
   Button,

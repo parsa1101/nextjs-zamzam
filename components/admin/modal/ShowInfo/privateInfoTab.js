@@ -1,13 +1,10 @@
-import { Box, Grid, GridItem, Text, useToast } from '@chakra-ui/react'
+import { Box, Grid, GridItem, Text } from '@chakra-ui/react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
-import React, { useEffect, useState } from 'react'
-import {} from '../../../../utils/error'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 
-export default function PrivateInfoTab({ id }) {
-  const token = Cookies.get('userToken')
-
-  const toast = useToast()
+export default function PrivateInfoTab({ id, token }) {
+  // const toast = useToast()
 
   const [userData, setUserData] = useState(null)
 
@@ -15,77 +12,41 @@ export default function PrivateInfoTab({ id }) {
 
   const [city, setCity] = useState({ id: '', name: '' })
 
-  /* eslint-disable react-hooks/exhaustive-deps */
+  const fetcheUserPrivateInfo = async (url, token) => {
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        setUserData(res.data)
+        setProvince(prev => ({ ...prev, id: res.data.provinceId }))
+        setCity(prev => ({ ...prev, id: res.data.cityId }))
+      })
+  }
 
-  useEffect(() => {
-    async function getProvince() {
-      try {
-        const { data } = await axios.get(
-          `/api/province/findById/${province.id}`
-        )
+  useSWR(
+    !userData ? [`/api/profile/getInfo/${id}`, token] : null,
+    fetcheUserPrivateInfo
+  )
 
-        if (data) {
-          setProvince(prev => ({ ...prev, name: data.province }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    if (province.id) {
-      getProvince()
-    }
-  }, [province.id])
+  const fetchePrivateProvince = async url => {
+    await axios.get(url).then(res => {
+      setProvince(prev => ({ ...prev, name: res.data.province }))
+    })
+  }
+  useSWR(
+    province.id ? [`/api/province/findById/${province.id}`] : null,
+    fetchePrivateProvince
+  )
 
-  useEffect(() => {
-    async function getCity() {
-      try {
-        const { data } = await axios.get(
-          `/api/province/findById/city/${city.id}`
-        )
+  const fetchePrivateCity = async url => {
+    await axios.get(url).then(res => {
+      setCity(prev => ({ ...prev, name: res.data.city }))
+    })
+  }
+  useSWR(
+    city.id ? [`/api/province/findById/city/${city.id}`] : null,
+    fetchePrivateCity
+  )
 
-        if (data) {
-          setCity(prev => ({ ...prev, name: data.city }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    if (city.id) {
-      getCity()
-    }
-  }, [city.id])
-
-  useEffect(() => {
-    async function getUserInfo() {
-      try {
-        const { data } = await axios.get(`/api/profile/getInfo/${id}`, {
-          headers: { authorization: `Bearer ${token}` }
-        })
-
-        if (data) {
-          setUserData(data)
-          setProvince(prev => ({ ...prev, id: data.provinceId }))
-          setCity(prev => ({ ...prev, id: data.cityId }))
-        }
-      } catch (err) {
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-
-    getUserInfo()
-  }, [])
   return (
     <Box borderWidth="1px" borderRadius="lg" overflow="auto">
       {userData && (

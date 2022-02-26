@@ -22,20 +22,17 @@ import {
   useMultiStyleConfig
 } from '@chakra-ui/react'
 
-// import PrivateInfoTab from './privateInfoTab'
-// import EducationInfoTab from './EducationInfoTab'
-// import WorkUserInfoTab from './WorkUserInfo'
 const PrivateInfoTab = dynamic(() => import('./privateInfoTab'))
+
 const EducationInfoTab = dynamic(() => import('./EducationInfoTab'))
+
 const WorkUserInfoTab = dynamic(() => import('./WorkUserInfo'))
 
-function ShowUserInfoModal({ isOpen, onClose, id }) {
+function ShowUserInfoModal({ isOpen, onClose, id, token }) {
   const CustomTab = React.forwardRef((props, ref) => {
-    // 1. Reuse the `useTab` hook
     const tabProps = useTab({ ...props, ref })
     const isSelected = !!tabProps['aria-selected']
 
-    // 2. Hook into the Tabs `size`, `variant`, props
     const styles = useMultiStyleConfig('Tabs', tabProps)
 
     return (
@@ -66,13 +63,13 @@ function ShowUserInfoModal({ isOpen, onClose, id }) {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <PrivateInfoTab id={id} />
+                <PrivateInfoTab id={id} token={token} />
               </TabPanel>
               <TabPanel>
-                <EducationInfoTab id={id} />
+                <EducationInfoTab id={id} token={token} />
               </TabPanel>
               <TabPanel>
-                <WorkUserInfoTab id={id} />
+                <WorkUserInfoTab id={id} token={token} />
               </TabPanel>
             </TabPanels>
           </Tabs>

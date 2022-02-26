@@ -49,7 +49,7 @@ export async function getServerSideProps(context) {
 
   await db.disconnect()
 
-  if (!userId && !user.isAdmin) {
+  if (!userId || !user.isAdmin) {
     return {
       redirect: {
         permanent: false,

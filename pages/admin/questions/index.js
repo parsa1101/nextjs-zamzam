@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -13,25 +13,20 @@ import {
 import { FiTrello, FiThumbsUp, FiThumbsDown } from 'react-icons/fi'
 
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai'
-// import AdminLayout from '../../../components/layouts/admin'
 const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
 import moment from 'jalali-moment'
 
-import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import {} from '../../../utils/error'
+import db from '../../../utils/db'
+import User from '../../../models/user'
+import useSWR from 'swr'
 
 const AdminQuestions = dynamic(() =>
   import('../../../components/admin/questions/AdminQuestions')
 )
-function ExpandableQuestionTable() {
+export default function ExpandableQuestionTable({ token }) {
   const router = useRouter()
-
-  const userId = Cookies.get('userId')
-
-  const token = Cookies.get('userToken')
-
   const toast = useToast()
 
   const [questions, setQuestions] = useState([])
@@ -64,20 +59,11 @@ function ExpandableQuestionTable() {
       })
     }
   }
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  useEffect(() => {
-    if (!userId) {
-      router.push('/login')
-    }
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const { data } = await axios.get(`/api/admin/question/all`, {
-          headers: { authorization: `Bearer ${token}` }
-        })
-        data.map((item, i) =>
+  const fetcher = async (url, token) => {
+    await axios
+      .get(url, { headers: { Authorization: 'Bearer ' + token } })
+      .then(res => {
+        res.data.map((item, i) =>
           setQuestions(prev => [
             ...prev,
             {
@@ -148,20 +134,23 @@ function ExpandableQuestionTable() {
             }
           ])
         )
-
-        setLoading(false)
-      } catch (err) {
-        setLoading(false)
-
+      })
+  }
+  useSWR(!questions ? [`/api/admin/question/all`, token] : null, fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      if (error) {
         toast({
-          title: err.message,
+          title: 'خطا',
+          description: error.message,
           status: 'error',
-          isClosable: true
+          duration: 9000
         })
       }
+      if (retryCount >= 10) return
+      // Retry after 5 seconds.
+      setTimeout(() => revalidate({ retryCount }), 5000)
     }
-    fetchData()
-  }, [userId])
+  })
 
   function questionsHandler(data) {
     setQuestions([])
@@ -351,6 +340,30 @@ function ExpandableQuestionTable() {
   )
 }
 
-export default dynamic(() => Promise.resolve(ExpandableQuestionTable), {
-  ssr: false
-})
+// export default dynamic(() => Promise.resolve(ExpandableQuestionTable), {
+//   ssr: false
+// })
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+  const token = context.req.cookies['userToken']
+
+  await db.connect()
+  const user = await User.findById(userId).lean()
+
+  await db.disconnect()
+
+  if (!userId || !user.isAdmin) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/401'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {
+      token
+    }
+  }
+}
