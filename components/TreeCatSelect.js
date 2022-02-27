@@ -1,9 +1,9 @@
 import {
   Button,
-  CircularProgress,
   List,
   ListIcon,
   ListItem,
+  Spinner,
   useToast
 } from '@chakra-ui/react'
 import React from 'react'
@@ -41,7 +41,7 @@ export default function TreeCatSelect({ catId }) {
   if (!data)
     return (
       <div>
-        <CircularProgress />
+        <Spinner />
       </div>
     )
 

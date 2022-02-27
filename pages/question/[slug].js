@@ -16,38 +16,15 @@ const P = dynamic(() => import('../../components/paragraph'))
 import db from '../../utils/db'
 import Question from '../../models/question'
 import Answer from '../../models/answer'
-// const Player = dynamic(() => import('../../components/player/Player'))
-// const Audio = dynamic(() => import('../../components/player/Audio'))
+import ReactPlayer from 'react-player'
+
 import { BiMailSend } from 'react-icons/bi'
 const SendQuestion = dynamic(() =>
   import('../../components/question/SendQuestion')
 )
 
 const QuestionScreen = ({ question, answer }) => {
-  // const [player, setPlayer] = useState(null)
-
   const [showQuestionBox, setShowQuestionBox] = useState(false)
-
-  // const [playerOptions] = useState({
-  //   sources: [
-  //     {
-  //       src: answer.media_path
-  //     }
-  //   ],
-  //   type: 'video/mp4'
-  // })
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  // useEffect(() => {
-  //   if (player) {
-  //     player.src([
-  //       {
-  //         src: answer.media_path
-  //       }
-  //     ])
-  //   }
-  // }, [player, answer.media_path])
 
   const clickHandler = () => {
     setShowQuestionBox(!showQuestionBox)
@@ -72,14 +49,17 @@ const QuestionScreen = ({ question, answer }) => {
           flexDir="column"
           justifyContent="space-between"
         >
-          {/* {answer.kind === 'mp4' && (
-            <Player
-              playerOptions={playerOptions}
-              onPlayerInit={setPlayer}
-              onPlayerDispose={setPlayer}
-            />
-          )} */}
-          {/* {answer.kind === 'mp3' && <Audio src={answer.media_path} />} */}
+          {answer.kind !== '0' && (
+            <div className="player-wrapper">
+              <ReactPlayer
+                width="100%"
+                height="100%"
+                url={answer.media_path}
+                controls={true}
+                className="react-player"
+              />
+            </div>
+          )}
         </Flex>
 
         {!showQuestionBox && (
@@ -108,23 +88,6 @@ const QuestionScreen = ({ question, answer }) => {
 }
 
 export default QuestionScreen
-
-// export const getStaticPaths = async () => {
-//   await db.connect()
-
-//   const questions = await Question.find({})
-//   await db.disconnect()
-
-//   // generate the paths
-//   const paths = questions.map(question => ({
-//     params: { slug: question.slug }
-//   }))
-
-//   return {
-//     paths,
-//     fallback: true
-//   }
-// }
 
 export async function getServerSideProps(context) {
   const { params } = context
