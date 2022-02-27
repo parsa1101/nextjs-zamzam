@@ -51,6 +51,20 @@ function convertCategoryToObj(doc) {
   if (doc.parrent_id) {
     doc.parrent_id = doc.parrent_id.toString()
   }
+
+  doc.createdAt = doc.createdAt.toString()
+  doc.updatedAt = doc.updatedAt.toString()
+  return doc
+}
+function convertCategoryToObj2(doc) {
+  doc._id = doc._id.toString()
+  if (doc.parrent_id) {
+    if (doc.parrent_id._id) {
+      doc.parrent_id._id = doc.parrent_id._id.toString()
+    } else {
+      doc.parrent_id = doc.parrent_id.toString()
+    }
+  }
   doc.createdAt = doc.createdAt.toString()
   doc.updatedAt = doc.updatedAt.toString()
   return doc
@@ -123,6 +137,7 @@ const db = {
   convertCategoryToObj,
   convertUserToObj,
   convertDocToObjInTemporaryQuestion,
-  convertOtherToObject
+  convertOtherToObject,
+  convertCategoryToObj2
 }
 export default db

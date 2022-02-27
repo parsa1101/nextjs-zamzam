@@ -43,8 +43,10 @@ handler.delete(async (req, res) => {
       searchInCategory(categories[i]._id)
     }
     await category.remove()
+    const allCategories = await Category.find({})
     await db.disconnect()
-    res.send('دسته مورد نظر با موفقیت حذف شد')
+
+    res.send(allCategories)
   } else {
     await db.disconnect()
     res.status(404).send({ message: 'دسته بندی مورد نظر یافت نشد' })

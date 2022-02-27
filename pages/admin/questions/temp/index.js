@@ -150,7 +150,7 @@ export default function ExpandableQuestionTable({ token }) {
     setLoading(false)
   }
   useSWR(
-    !questions ? [`/api/admin/question/temporary`, token] : null,
+    questions.length === 0 ? [`/api/admin/question/temporary`, token] : null,
     fetcher,
     {
       onErrorRetry: (error, key, config, revalidate, { retryCount }) => {

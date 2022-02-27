@@ -13,7 +13,6 @@ import {
   Box,
   Button,
   Center,
-  CircularProgress,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -25,7 +24,8 @@ import {
   Text,
   Tooltip,
   useToast,
-  Container
+  Container,
+  Spinner
 } from '@chakra-ui/react'
 import { AiFillDelete } from 'react-icons/ai'
 
@@ -245,11 +245,11 @@ function InsertRole() {
                   </Button>
                 </ShowForm>
                 {loading ? (
-                  <CircularProgress />
+                  <Spinner color="green" />
                 ) : (
                   <Grid xs={12} md={6}>
                     <Text mt={10}>مجوز دسترسی ها:</Text>
-                    {loadingDelete && <CircularProgress />}
+                    {loadingDelete && <Spinner color="blue" />}
 
                     <List spacing={3}>
                       {permissionArray.map((item, index) => (

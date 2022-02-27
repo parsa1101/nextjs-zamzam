@@ -15,8 +15,9 @@ handler.delete(async (req, res) => {
 
   await Role.findByIdAndDelete(id)
 
+  const roles = await Role.find({})
   await db.disconnect()
-  res.send('نقش مورد نظر با موفقیت حذف شد.')
+  res.send(roles)
 })
 
 export default handler

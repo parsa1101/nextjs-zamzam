@@ -112,13 +112,12 @@ export default function Nav() {
               <MenuList>
                 <MenuGroup>
                   <MenuItem>
-                    {' '}
-                    <NextLink href="/admin/category">
+                    <NextLink href={'/admin/category'}>
                       نمایش دسته بندی ها
                     </NextLink>
                   </MenuItem>
                   <MenuItem>
-                    <NextLink href="/admin/category/insert">
+                    <NextLink href={'/admin/category/insert'}>
                       ایجاد دسته بندی
                     </NextLink>{' '}
                   </MenuItem>
@@ -138,12 +137,12 @@ export default function Nav() {
                 نقش ها
               </MenuButton>
               <MenuList>
-                <MenuGroup title="Profile">
+                <MenuGroup>
                   <MenuItem>
-                    <NextLink href="/admin/roles">نمایش نقش ها</NextLink>
+                    <NextLink href={'/admin/roles'}>نمایش نقش ها</NextLink>
                   </MenuItem>
                   <MenuItem>
-                    <NextLink href="/admin/roles/insert">
+                    <NextLink href={'/admin/roles/insert'}>
                       ایجاد نقش جدید
                     </NextLink>{' '}
                   </MenuItem>

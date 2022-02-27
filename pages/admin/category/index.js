@@ -1,129 +1,33 @@
-import React, { useEffect, useReducer } from 'react'
-import axios from 'axios'
+import React from 'react'
+
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
+
 import NextLink from 'next/link'
-const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
-import Cookies from 'js-cookie'
+
 import {
   Button,
-  ButtonGroup,
   Center,
-  CircularProgress,
-  Box,
   List,
   ListItem,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useToast,
-  Container
+  Container,
+  Box
 } from '@chakra-ui/react'
+
 import { AddIcon } from '@chakra-ui/icons'
-import { BiEdit } from 'react-icons/bi'
-import { RiDeleteBin2Line } from 'react-icons/ri'
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true, error: '' }
-    case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        loading: false,
-        categories: action.payload,
-        error: ''
-      }
-    case 'FETCH_FAIL':
-      return { ...state, loading: false, error: action.payload }
-    case 'DELETE_REQUEST':
-      return { ...state, loadingDelete: true }
-    case 'DELETE_SUCCESS':
-      return { ...state, loadingDelete: false, successDelete: true }
-    case 'DELETE_FAIL':
-      return { ...state, loadingDelete: false }
-    case 'DELETE_RESET':
-      return { ...state, loadingDelete: false, successDelete: false }
-    default:
-      state
-  }
-}
+import db from '../../../utils/db'
 
-function AdminCategories() {
-  const router = useRouter()
+import User from '../../../models/user'
 
-  const userId = Cookies.get('userId')
+import Category from '../../../models/category'
 
-  const token = Cookies.get('userToken')
+const AdminLayout = dynamic(() => import('../../../components/layouts/admin'))
+const ShowAllCategories = dynamic(() =>
+  import('../../../components/admin/categories/ShowAllCategories')
+)
 
-  const toast = useToast()
-
-  const [{ loading, categories, successDelete, loadingDelete }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      categories: [],
-      error: ''
-    })
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-
-  useEffect(() => {
-    if (userId === undefined) {
-      return router.push('/login')
-    }
-    const fetchData = async () => {
-      try {
-        dispatch({ type: 'FETCH_REQUEST' })
-        const { data } = await axios.get(`/api/admin/category/all`, {
-          headers: { authorization: `Bearer ${token}` }
-        })
-        dispatch({ type: 'FETCH_SUCCESS', payload: data })
-      } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: err.message })
-        toast({
-          title: err.message,
-          status: 'error',
-          isClosable: true
-        })
-      }
-    }
-    if (successDelete) {
-      dispatch({ type: 'DELETE_RESET' })
-    } else {
-      fetchData()
-    }
-  }, [successDelete, userId])
-
-  const deleteHandler = async category_id => {
-    if (!window.confirm('آیا شما مطمین هستید؟')) {
-      return
-    }
-
-    try {
-      dispatch({ type: 'DELETE_REQUEST' })
-      await axios.delete(`/api/admin/category/${category_id}`, {
-        headers: { authorization: `Bearer ${token}` }
-      })
-      dispatch({ type: 'DELETE_SUCCESS' })
-
-      toast({
-        title: 'دسته بندی مورد نظر با موفقیت حذف شد',
-        status: 'success',
-        isClosable: true
-      })
-    } catch (err) {
-      dispatch({ type: 'DELETE_FAIL' })
-      toast({
-        title: err.message,
-        status: 'error',
-        isClosable: true
-      })
-    }
-  }
-
+export default function AdminCategories({ token, categories }) {
+  console.log(categories)
   return (
     <AdminLayout>
       <Container maxW="container.xl" p={5}>
@@ -160,60 +64,7 @@ function AdminCategories() {
                       </Button>
                     </NextLink>
                   </ListItem>
-                  {loadingDelete && <CircularProgress />}
-
-                  <ListItem>
-                    {loading ? (
-                      <CircularProgress />
-                    ) : (
-                      <Table>
-                        <Thead>
-                          <Tr>
-                            <Th>ID</Th>
-                            <Th>نام دسته بندی</Th>
-                            <Th>نام والد</Th>
-                            <Th>عملیات</Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {categories.map(category => (
-                            <Tr key={category._id}>
-                              <Td>{category._id.substring(20, 24)}</Td>
-                              <Td>{category.name}</Td>
-                              <Td>
-                                {category.parrent_id
-                                  ? category.parrent_id.name
-                                  : 'دسته اصلی'}
-                              </Td>
-
-                              <Td>
-                                <ButtonGroup variant="outline" spacing="6">
-                                  <NextLink
-                                    href={`/admin/category/${category._id}`}
-                                    passHref
-                                  >
-                                    <Button
-                                      border="2px"
-                                      borderColor="green.500"
-                                    >
-                                      <BiEdit />
-                                    </Button>
-                                  </NextLink>
-                                  <Button
-                                    onClick={() => deleteHandler(category._id)}
-                                    border="2px"
-                                    borderColor="red.500"
-                                  >
-                                    <RiDeleteBin2Line />
-                                  </Button>
-                                </ButtonGroup>
-                              </Td>
-                            </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
-                    )}
-                  </ListItem>
+                  <ShowAllCategories token={token} allCategories={categories} />
                 </List>
               </Box>
             </Center>
@@ -224,4 +75,33 @@ function AdminCategories() {
   )
 }
 
-export default dynamic(() => Promise.resolve(AdminCategories), { ssr: false })
+export async function getServerSideProps(context) {
+  const userId = context.req.cookies['userId']
+  const token = context.req.cookies['userToken']
+
+  await db.connect()
+  const user = await User.findById(userId).lean()
+  const categories = await Category.find({})
+    .sort({ createdAt: -1 })
+    .populate('parrent_id', 'name', Category)
+    .lean()
+
+  await db.disconnect()
+
+  if (!userId || !user.isAdmin) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/401'
+      },
+      props: {}
+    }
+  }
+  return {
+    props: {
+      token,
+      categories: categories.map(db.convertCategoryToObj2)
+    }
+  }
+}
+// export default dynamic(() => Promise.resolve(AdminCategories), { ssr: false })

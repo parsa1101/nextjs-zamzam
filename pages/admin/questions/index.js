@@ -136,21 +136,25 @@ export default function ExpandableQuestionTable({ token }) {
         )
       })
   }
-  useSWR(!questions ? [`/api/admin/question/all`, token] : null, fetcher, {
-    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-      if (error) {
-        toast({
-          title: 'خطا',
-          description: error.message,
-          status: 'error',
-          duration: 9000
-        })
+  useSWR(
+    questions.length === 0 ? [`/api/admin/question/all`, token] : null,
+    fetcher,
+    {
+      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+        if (error) {
+          toast({
+            title: 'خطا',
+            description: error.message,
+            status: 'error',
+            duration: 9000
+          })
+        }
+        if (retryCount >= 10) return
+        // Retry after 5 seconds.
+        setTimeout(() => revalidate({ retryCount }), 5000)
       }
-      if (retryCount >= 10) return
-      // Retry after 5 seconds.
-      setTimeout(() => revalidate({ retryCount }), 5000)
     }
-  })
+  )
 
   function questionsHandler(data) {
     setQuestions([])

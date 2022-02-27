@@ -129,7 +129,7 @@ function ExpandableTableComponent({ token }) {
       })
     setLoading(false)
   }
-  useSWR(!users ? [`/api/admin/users`, token] : null, fetcher, {
+  useSWR(users.length === 0 ? [`/api/admin/users`, token] : null, fetcher, {
     onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
       if (error) {
         toast({
