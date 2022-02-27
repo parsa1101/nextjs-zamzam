@@ -19,10 +19,6 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
-  List,
-  ListItem,
-  ListIcon,
-  Text,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -33,9 +29,9 @@ import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
-import { FaLayerGroup } from 'react-icons/fa'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import DrawerCategory from './DrawerCategory'
 
 const GroupDrawer = ({ toggle, isOpen }) => {
   const menuItems = JSON.parse(Cookies.get('menuItems'))
@@ -46,9 +42,14 @@ const GroupDrawer = ({ toggle, isOpen }) => {
       <DrawerContent>
         <DrawerHeader borderBottomWidth="1px">گروهبندی احکام:</DrawerHeader>
         <DrawerBody>
-          {menuItems.map(item => (
+          <DrawerCategory categories={menuItems} toggle={toggle} />
+          {/* {menuItems.map(item => (
             <List spacing={5} key={item._id}>
-              <ListItem m={5}>
+              <ListItem
+                m={5}
+                cursor="pointer"
+               
+              >
                 <NextLink href={`/question/category/${item._id}`} passHref>
                   <Link onClick={toggle}>
                     <Text color="gray">
@@ -61,7 +62,7 @@ const GroupDrawer = ({ toggle, isOpen }) => {
                 </NextLink>
               </ListItem>
             </List>
-          ))}
+          ))} */}
         </DrawerBody>
       </DrawerContent>
     </Drawer>
