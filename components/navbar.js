@@ -93,6 +93,7 @@ const Navbar = props => {
   const userId = Cookies.get('userId')
   const token = Cookies.get('userToken')
   const isExpert = Cookies.get('isExpert')
+  const isAdmin = Cookies.get('isAdmin')
 
   const [showDrawer1, setShowDrawer1] = useState(false)
   const [showDrawer2, setShowDrawer2] = useState(false)
@@ -174,6 +175,18 @@ const Navbar = props => {
             <Menu isLazy>
               <MenuButton>اطلاعات کاربری</MenuButton>
               <MenuList>
+                {isAdmin && (
+                  <LinkItem
+                    _target="_blank"
+                    href="/admin/dashboard"
+                    display="inline-flex"
+                    alignItems="center"
+                    style={{ gap: 4 }}
+                    pl={2}
+                  >
+                    ورود به پنل ادمین
+                  </LinkItem>
+                )}
                 <LinkItem
                   _target="_blank"
                   href="/wizard"

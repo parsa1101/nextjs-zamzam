@@ -30,9 +30,11 @@ import Cookies from 'js-cookie'
 
 const Carousel = dynamic(() => import('../components/carousel/Carousel'))
 const Paragraph = dynamic(() => import('../components/paragraph'))
-const Home = ({ questions, categories, isExpert }) => {
+const Home = ({ questions, categories, isExpert, isAdmin }) => {
   Cookies.set('menuItems', JSON.stringify(categories))
   Cookies.set('isExpert', isExpert)
+  Cookies.set('isAdmin', isAdmin)
+
   return (
     <Layout>
       <Container>
@@ -131,11 +133,13 @@ export async function getServerSideProps(context) {
 
   await db.connect()
   let isExpert = false
+  let isAdmin = false
   let role = null
   if (userId) {
     const user = await User.findById(userId)
     for (let i = 0, len = user.roles.length; i < len; i++) {
       role = await Role.findById(user.roles[i]).lean()
+      isAdmin = user.isAdmin
       if (role.name === 'expert') {
         isExpert = true
       }
@@ -153,7 +157,8 @@ export async function getServerSideProps(context) {
     props: {
       questions: questions.map(db.convertDocToObj),
       categories: categories.map(db.convertCategoryToObj),
-      isExpert
+      isExpert,
+      isAdmin
     }
   }
 }
