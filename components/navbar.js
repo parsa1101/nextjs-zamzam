@@ -175,28 +175,19 @@ const Navbar = props => {
             <Menu isLazy>
               <MenuButton>اطلاعات کاربری</MenuButton>
               <MenuList>
-                {isAdmin && (
+                <MenuItem>
                   <LinkItem
                     _target="_blank"
-                    href="/admin/dashboard"
+                    href="/wizard"
                     display="inline-flex"
                     alignItems="center"
                     style={{ gap: 4 }}
                     pl={2}
                   >
-                    ورود به پنل ادمین
+                    ثبت اطلاعات به عنوان کارشناس
                   </LinkItem>
-                )}
-                <LinkItem
-                  _target="_blank"
-                  href="/wizard"
-                  display="inline-flex"
-                  alignItems="center"
-                  style={{ gap: 4 }}
-                  pl={2}
-                >
-                  ثبت اطلاعات به عنوان کارشناس
-                </LinkItem>
+                </MenuItem>
+                <hr />
                 <MenuItem>
                   <LinkItem
                     _target="_blank"
@@ -210,6 +201,24 @@ const Navbar = props => {
                     ویرایش اطلاعات کاربری
                   </LinkItem>
                 </MenuItem>
+                <hr />
+                {isAdmin && (
+                  <>
+                    <MenuItem>
+                      <LinkItem
+                        _target="_blank"
+                        href="/admin/dashboard"
+                        display="inline-flex"
+                        alignItems="center"
+                        style={{ gap: 4 }}
+                        pl={2}
+                      >
+                        ورود به پنل ادمین
+                      </LinkItem>
+                    </MenuItem>
+                    <hr />
+                  </>
+                )}
 
                 {isExpert && (
                   <MenuItem>
@@ -261,7 +270,7 @@ const Navbar = props => {
                   <GroupDrawer toggle={toggleDrawer2} isOpen={showDrawer2} />
                 )}
 
-                {userId && <SubMenu isExpert={isExpert} />}
+                {userId && <SubMenu isExpert={isExpert} isAdmin={isAdmin} />}
                 {userId && (
                   <Button variant="ghost" onClick={logoutHandler}>
                     خروج
@@ -276,7 +285,7 @@ const Navbar = props => {
     </Box>
   )
 }
-const SubMenu = ({ isExpert }) => {
+const SubMenu = ({ isExpert, isAdmin }) => {
   return (
     <Accordion allowToggle>
       <AccordionItem>
@@ -315,6 +324,19 @@ const SubMenu = ({ isExpert }) => {
             <LinkItem
               _target="_blank"
               href="/expert/showCategory"
+              display="inline-flex"
+              alignItems="center"
+              style={{ gap: 4 }}
+              pl={2}
+            >
+              پاسخگویی به سوالات
+            </LinkItem>
+          )}
+          <hr />
+          {isAdmin && (
+            <LinkItem
+              _target="_blank"
+              href="/admin/dashboard"
               display="inline-flex"
               alignItems="center"
               style={{ gap: 4 }}
